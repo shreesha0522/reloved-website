@@ -15,20 +15,20 @@ interface Category {
 }
 
 const categories: Category[] = [
-  { name: "Jewelry Collection", img: "jewelry.png" },
-  { name: "Home Decor", img: "homedecor.png" },
+  { name: "Clothing", img: "clothing.png" },
+  { name: "Furniture", img: "furniture.png" },
+  { name: "Books", img: "books.png" },
   { name: "Accessories", img: "accessories1.png" },
-  { name: "Candle", img: "candles1.png" },
-  { name: "Crochet", img: "crochet.png" },
+  { name: "Home Goods", img: "homedecor.png" },
 ];
 
 function routeFor(name: string) {
   const map: Record<string, string> = {
-    "Jewelry Collection": "/shop/jewelry",
-    "Home Decor": "/shop/home-decor",
+    "Clothing": "/shop/clothing",
+    "Furniture": "/shop/furniture",
+    "Books": "/shop/books",
     "Accessories": "/shop/accessories",
-    "Candle": "/shop/candles",
-    "Crochet": "/shop/crochet",
+    "Home Goods": "/shop/home-goods",
   };
   return map[name] ?? "/shop";
 }
@@ -151,13 +151,13 @@ useEffect(() => {
     : [];
 
   return (
-    <header className="bg-[#FAF3EC] px-4 md:px-16 py-4 relative z-50 border-b border-[#E7DDD4]">
+    <header className="bg-[#E8EDE6] px-4 md:px-16 py-4 relative z-50 border-b border-[#D8E0D9]">
       <div className="flex items-center justify-between gap-4 md:gap-8">
 
-        {/* Logo */}
-        <div className="font-display text-xl md:text-2xl font-semibold whitespace-nowrap">
-          Handmade Boutique
-        </div>
+     {/* Logo */}
+<div className="font-display text-xl md:text-2xl font-semibold whitespace-nowrap">
+  ReLoved
+</div>
 
         {/* Desktop nav */}
         <nav className="hidden lg:flex gap-7 text-sm flex-shrink-0">
@@ -169,8 +169,8 @@ useEffect(() => {
                 href={link.href}
                 className={`pb-1 transition-colors ${
                   isActive
-                    ? "text-[#8C4A3A] border-b-2 border-[#8C4A3A]"
-                    : "hover:text-[#8C4A3A] border-b-2 border-transparent"
+                    ? "text-[#4A6B5A] border-b-2 border-[#4A6B5A]"
+                    : "hover:text-[#4A6B5A] border-b-2 border-transparent"
                 }`}
               >
                 {link.label}
@@ -191,21 +191,21 @@ useEffect(() => {
             }}
             className="flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm"
           >
-            <Search size={16} className="text-[#8A7F76] flex-shrink-0" strokeWidth={2} />
+            <Search size={16} className="text-[#6B7B76] flex-shrink-0" strokeWidth={2} />
             <input
               type="text"
               placeholder="Search for anything"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               onFocus={() => setIsOpen(true)}
-              className="w-full text-sm text-[#2B2420] bg-transparent outline-none placeholder:text-[#8A7F76]"
+              className="w-full text-sm text-[#1A2E2A] bg-transparent outline-none placeholder:text-[#6B7B76]"
             />
           </form>
           {isOpen && (
-            <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-white rounded-xl shadow-lg border border-[#E7DDD4] overflow-hidden z-50">
+            <div className="absolute top-[calc(100%+8px)] left-0 w-full bg-white rounded-xl shadow-lg border border-[#D8E0D9] overflow-hidden z-50">
               {filteredProducts.length > 0 && (
                 <>
-                  <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#8A7F76]">
+                  <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#6B7B76]">
                     Products
                   </div>
                   {filteredProducts.map((p) => (
@@ -215,36 +215,36 @@ useEffect(() => {
                         router.push(`/shop/${p.category}/${p._id}`);
                         setIsOpen(false);
                       }}
-                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#FAF3EC] transition-colors cursor-pointer"
+                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#E8EDE6] transition-colors cursor-pointer"
                     >
                       <img
                         src={p.image}
                         alt={p.name}
                         className="w-9 h-9 rounded-md object-cover"
                       />
-                      <span className="text-sm text-[#2B2420]">{p.name}</span>
+                      <span className="text-sm text-[#1A2E2A]">{p.name}</span>
                     </div>
                   ))}
                 </>
               )}
-              <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#8A7F76]">
+              <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#6B7B76]">
                 Category Suggestions
               </div>
               {filtered.length === 0 ? (
-                <div className="px-4 py-4 text-sm text-[#8A7F76]">No matches found.</div>
+                <div className="px-4 py-4 text-sm text-[#6B7B76]">No matches found.</div>
               ) : (
                 <>
-                  <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#8A7F76]">
+                  <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#6B7B76]">
                     Category Suggestions
                   </div>
                   {filtered.length === 0 ? (
-                    <div className="px-4 py-4 text-sm text-[#8A7F76]">No matches found.</div>
+                    <div className="px-4 py-4 text-sm text-[#6B7B76]">No matches found.</div>
                   ) : (
                     filtered.map((cat) => (
                       <Link
                         key={cat.name}
                         href={routeFor(cat.name)}
-                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#FAF3EC] transition-colors"
+                        className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#E8EDE6] transition-colors"
                         onClick={() => setIsOpen(false)}
                       >
                         <img
@@ -252,7 +252,7 @@ useEffect(() => {
                           alt={cat.name}
                           className="w-9 h-9 rounded-md object-cover"
                         />
-                        <span className="text-sm text-[#2B2420]">{cat.name}</span>
+                        <span className="text-sm text-[#1A2E2A]">{cat.name}</span>
                       </Link>
                     ))
                   )}
@@ -268,7 +268,7 @@ useEffect(() => {
             <div className="relative" ref={accountRef}>
               <button
                 onClick={() => setAccountOpen(!accountOpen)}
-                className="flex items-center gap-1 text-[#2B2420] hover:text-[#8C4A3A] transition-colors"
+                className="flex items-center gap-1 text-[#1A2E2A] hover:text-[#4A6B5A] transition-colors"
                 title="My Account"
               >
                 <User size={20} strokeWidth={1.75} />
@@ -280,17 +280,17 @@ useEffect(() => {
               </button>
 
               {accountOpen && (
-                <div className="absolute right-0 top-[calc(100%+10px)] w-48 bg-white rounded-xl shadow-lg border border-[#E7DDD4] overflow-hidden">
+                <div className="absolute right-0 top-[calc(100%+10px)] w-48 bg-white rounded-xl shadow-lg border border-[#D8E0D9] overflow-hidden">
                   <button
                     onClick={() => { router.push("/account"); setAccountOpen(false); }}
-                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#2B2420] hover:bg-[#FAF3EC] transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#1A2E2A] hover:bg-[#E8EDE6] transition-colors text-left"
                   >
                     <User size={16} strokeWidth={1.75} />
                     My Account
                   </button>
                   <button
                     onClick={() => { router.push("/account/orders"); setAccountOpen(false); }}
-                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#2B2420] hover:bg-[#FAF3EC] transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#1A2E2A] hover:bg-[#E8EDE6] transition-colors text-left"
                   >
                     <Package size={16} strokeWidth={1.75} />
                     My Orders
@@ -298,7 +298,7 @@ useEffect(() => {
                   {isSeller && (
                     <button
                       onClick={() => { router.push("/seller/dashboard"); setAccountOpen(false); }}
-                      className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#2B2420] hover:bg-[#FAF3EC] transition-colors text-left"
+                      className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#1A2E2A] hover:bg-[#E8EDE6] transition-colors text-left"
                     >
                       <Store size={16} strokeWidth={1.75} />
                       Seller Dashboard
@@ -307,7 +307,7 @@ useEffect(() => {
                   {isAdmin && (
   <button
     onClick={() => { router.push("/admin/users"); setAccountOpen(false); }}
-    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#2B2420] hover:bg-[#FAF3EC] transition-colors text-left"
+    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#1A2E2A] hover:bg-[#E8EDE6] transition-colors text-left"
   >
     <ShieldCheck size={16} strokeWidth={1.75} />
     Admin Panel
@@ -316,16 +316,16 @@ useEffect(() => {
 {isAdmin && (
   <button
     onClick={() => { router.push("/admin/products"); setAccountOpen(false); }}
-    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#2B2420] hover:bg-[#FAF3EC] transition-colors text-left"
+    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#1A2E2A] hover:bg-[#E8EDE6] transition-colors text-left"
   >
     <Package size={16} strokeWidth={1.75} />
     Product Approvals
   </button>
 )}
-                  <div className="h-px bg-[#E7DDD4]" />
+                  <div className="h-px bg-[#D8E0D9]" />
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#8C4A3A] hover:bg-[#FAF3EC] transition-colors text-left"
+                    className="w-full flex items-center gap-2.5 px-4 py-3 text-sm text-[#4A6B5A] hover:bg-[#E8EDE6] transition-colors text-left"
                   >
                     <LogOut size={16} strokeWidth={1.75} />
                     Logout
@@ -337,7 +337,7 @@ useEffect(() => {
             <button
               title="Login"
               onClick={() => router.push("/login")}
-              className="text-[#2B2420] hover:text-[#8C4A3A] transition-colors"
+              className="text-[#1A2E2A] hover:text-[#4A6B5A] transition-colors"
             >
               <User size={20} strokeWidth={1.75} />
             </button>
@@ -346,11 +346,11 @@ useEffect(() => {
           <Link
             href="/wishlist"
             title="Wishlist"
-            className="relative text-[#2B2420] hover:text-[#8C4A3A] transition-colors"
+            className="relative text-[#1A2E2A] hover:text-[#4A6B5A] transition-colors"
           >
             <Heart size={20} strokeWidth={1.75} />
             {wishlistCount > 0 && (
-              <sup className="absolute -top-2 -right-2.5 bg-[#8C4A3A] text-white text-[9px] rounded-full px-1.5 py-0.5 leading-none">
+              <sup className="absolute -top-2 -right-2.5 bg-[#4A6B5A] text-white text-[9px] rounded-full px-1.5 py-0.5 leading-none">
                 {wishlistCount}
               </sup>
             )}
@@ -359,11 +359,11 @@ useEffect(() => {
           <Link
             href="/cart"
             title="Cart"
-            className="relative text-[#2B2420] hover:text-[#8C4A3A] transition-colors"
+            className="relative text-[#1A2E2A] hover:text-[#4A6B5A] transition-colors"
           >
             <ShoppingCart size={20} strokeWidth={1.75} />
             {cartCount > 0 && (
-              <sup className="absolute -top-2 -right-2.5 bg-[#8C4A3A] text-white text-[9px] rounded-full px-1.5 py-0.5 leading-none">
+              <sup className="absolute -top-2 -right-2.5 bg-[#4A6B5A] text-white text-[9px] rounded-full px-1.5 py-0.5 leading-none">
                 {cartCount}
               </sup>
             )}
@@ -371,7 +371,7 @@ useEffect(() => {
 
           {/* Hamburger — mobile only */}
           <button
-            className="lg:hidden text-[#2B2420]"
+            className="lg:hidden text-[#1A2E2A]"
             onClick={() => setMenuOpen(!menuOpen)}
           >
             {menuOpen ? <X size={22} strokeWidth={1.75} /> : <Menu size={22} strokeWidth={1.75} />}
@@ -381,15 +381,15 @@ useEffect(() => {
 
       {/* Mobile menu dropdown */}
       {menuOpen && (
-        <div className="lg:hidden bg-[#FAF3EC] border-t border-[#E7DDD4] px-2 py-4 mt-4 flex flex-col gap-4">
+        <div className="lg:hidden bg-[#E8EDE6] border-t border-[#D8E0D9] px-2 py-4 mt-4 flex flex-col gap-4">
           <div className="md:hidden flex items-center gap-2 bg-white rounded-full px-4 py-2 shadow-sm mb-2">
-            <Search size={16} className="text-[#8A7F76] flex-shrink-0" strokeWidth={2} />
+            <Search size={16} className="text-[#6B7B76] flex-shrink-0" strokeWidth={2} />
             <input
               type="text"
               placeholder="Search for anything"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full text-sm text-[#2B2420] bg-transparent outline-none placeholder:text-[#8A7F76]"
+              className="w-full text-sm text-[#1A2E2A] bg-transparent outline-none placeholder:text-[#6B7B76]"
             />
           </div>
           {navLinks.map((link) => {
@@ -398,7 +398,7 @@ useEffect(() => {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`text-sm ${isActive ? "text-[#8C4A3A] font-medium" : "hover:text-[#8C4A3A]"}`}
+                className={`text-sm ${isActive ? "text-[#4A6B5A] font-medium" : "hover:text-[#4A6B5A]"}`}
                 onClick={() => setMenuOpen(false)}
               >
                 {link.label}
@@ -408,7 +408,7 @@ useEffect(() => {
           {!isLoggedIn && (
             <button
               onClick={() => { router.push("/login"); setMenuOpen(false); }}
-              className="text-sm text-left text-[#8C4A3A] font-medium"
+              className="text-sm text-left text-[#4A6B5A] font-medium"
             >
               Login / Sign Up
             </button>
@@ -416,7 +416,7 @@ useEffect(() => {
           {isLoggedIn && (
             <button
               onClick={() => { handleLogout(); setMenuOpen(false); }}
-              className="text-sm text-left text-[#8C4A3A] font-medium"
+              className="text-sm text-left text-[#4A6B5A] font-medium"
             >
               Logout
             </button>

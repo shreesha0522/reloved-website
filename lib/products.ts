@@ -10,6 +10,7 @@ export interface Product {
   image: string;
   description?: string;
   stock: number;
+  condition?: "Like New" | "Good" | "Fair";
   rating: number;
   reviews: number;
   sellerId: string;
@@ -70,6 +71,7 @@ export async function createProduct(payload: {
   image: string;
   description?: string;
   stock?: number;
+  condition?: string;
 }): Promise<{ success: boolean; product?: Product; message?: string }> {
   const token = getToken();
   if (!token) return { success: false, message: "Not logged in" };
@@ -87,6 +89,7 @@ export async function createProduct(payload: {
     return { success: false, message: "Something went wrong" };
   }
 }
+
 export async function updateProduct(
   id: string,
   payload: {
@@ -97,6 +100,7 @@ export async function updateProduct(
     image: string;
     description?: string;
     stock?: number;
+    condition?: string;
   }
 ): Promise<{ success: boolean; product?: Product; message?: string }> {
   const token = getToken();

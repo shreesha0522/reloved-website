@@ -5,7 +5,7 @@ export default function Collections() {
     <section className="px-6 md:px-16 py-16">
       <div className="mb-9">
         <h2 className="font-display text-3xl mb-1">Curated Collections</h2>
-        <p className="text-sm text-[#8A7F76]">Thoughtfully designed, expertly crafted.</p>
+        <p className="text-sm text-[#6B7B76]">Thoughtfully designed, expertly crafted.</p>
       </div>
 
       <div className="grid md:grid-cols-3 gap-4">

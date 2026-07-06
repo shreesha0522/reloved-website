@@ -44,13 +44,13 @@ if (!content.includes(oldFilter)) { console.log('FILTER BLOCK NOT FOUND'); proce
 content = content.replace(oldFilter, newFilter);
 
 // 4. Render product suggestions in the dropdown, above category suggestions
-const oldDropdown = `              <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#8A7F76]">
+const oldDropdown = `              <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#6B7B76]">
                 Category Suggestions
               </div>`;
 
 const newDropdown = `              {filteredProducts.length > 0 && (
                 <>
-                  <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#8A7F76]">
+                  <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#6B7B76]">
                     Products
                   </div>
                   {filteredProducts.map((p) => (
@@ -60,19 +60,19 @@ const newDropdown = `              {filteredProducts.length > 0 && (
                         router.push(\`/shop/\${p.category}/\${p._id}\`);
                         setIsOpen(false);
                       }}
-                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#FAF3EC] transition-colors cursor-pointer"
+                      className="flex items-center gap-3 px-4 py-2.5 hover:bg-[#E8EDE6] transition-colors cursor-pointer"
                     >
                       <img
                         src={p.image}
                         alt={p.name}
                         className="w-9 h-9 rounded-md object-cover"
                       />
-                      <span className="text-sm text-[#2B2420]">{p.name}</span>
+                      <span className="text-sm text-[#1A2E2A]">{p.name}</span>
                     </div>
                   ))}
                 </>
               )}
-              <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#8A7F76]">
+              <div className="px-4 pt-3 pb-1 text-[11px] uppercase tracking-wider text-[#6B7B76]">
                 Category Suggestions
               </div>`;
 

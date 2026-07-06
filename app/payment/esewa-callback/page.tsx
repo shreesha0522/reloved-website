@@ -31,15 +31,15 @@ export default function EsewaCallbackPage() {
   }, [searchParams, router]);
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] flex items-center justify-center px-6 text-center">
+    <div className="min-h-screen bg-[#F4F6F2] flex items-center justify-center px-6 text-center">
       {status === "verifying" ? (
-        <p className="text-[#8A7F76] text-sm">Verifying your payment, please wait...</p>
+        <p className="text-[#6B7B76] text-sm">Verifying your payment, please wait...</p>
       ) : (
         <div>
           <p className="text-red-600 text-sm mb-4">{errorMsg}</p>
           <button
             onClick={() => router.push("/cart")}
-            className="text-[#8C4A3A] text-sm font-medium hover:underline"
+            className="text-[#4A6B5A] text-sm font-medium hover:underline"
           >
             Back to cart
           </button>

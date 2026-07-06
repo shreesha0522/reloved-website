@@ -67,18 +67,18 @@ export default function AdminProductsPage() {
   if (checking || !isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] px-6 md:px-16 py-10">
+    <div className="min-h-screen bg-[#F4F6F2] px-6 md:px-16 py-10">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="font-display text-3xl md:text-4xl text-[#2B2420]">
+        <h1 className="font-display text-3xl md:text-4xl text-[#1A2E2A]">
           Product Approvals
         </h1>
-        <span className="text-sm text-[#8A7F76]">{products.length} pending</span>
+        <span className="text-sm text-[#6B7B76]">{products.length} pending</span>
       </div>
 
       {loading ? (
-        <p className="text-sm text-[#8A7F76]">Loading...</p>
+        <p className="text-sm text-[#6B7B76]">Loading...</p>
       ) : products.length === 0 ? (
-        <p className="text-sm text-[#8A7F76]">No products awaiting approval. 🎉</p>
+        <p className="text-sm text-[#6B7B76]">No products awaiting approval. 🎉</p>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
           {products.map((product) => (
@@ -90,13 +90,13 @@ export default function AdminProductsPage() {
               />
               <div className="p-5">
                 <h4 className="font-display text-lg mb-1">{product.name}</h4>
-                <p className="text-xs text-[#8A7F76] mb-1 capitalize">{product.category}</p>
-                <p className="text-sm text-[#8C4A3A] font-semibold mb-2">Rs {product.price}</p>
-                <p className="text-xs text-[#8A7F76] mb-3">
+                <p className="text-xs text-[#6B7B76] mb-1 capitalize">{product.category}</p>
+                <p className="text-sm text-[#4A6B5A] font-semibold mb-2">Rs {product.price}</p>
+                <p className="text-xs text-[#6B7B76] mb-3">
                   Seller: {product.sellerId?.username} ({product.sellerId?.email})
                 </p>
                 {product.description && (
-                  <p className="text-sm text-[#2B2420] mb-4 line-clamp-2">
+                  <p className="text-sm text-[#1A2E2A] mb-4 line-clamp-2">
                     {product.description}
                   </p>
                 )}
@@ -107,7 +107,7 @@ export default function AdminProductsPage() {
                       placeholder="Reason for rejection..."
                       value={rejectReason}
                       onChange={(e) => setRejectReason(e.target.value)}
-                      className="text-sm border border-[#E7DDD4] rounded-lg p-2 w-full resize-none"
+                      className="text-sm border border-[#D8E0D9] rounded-lg p-2 w-full resize-none"
                       rows={2}
                     />
                     <div className="flex gap-2">
@@ -123,7 +123,7 @@ export default function AdminProductsPage() {
                           setRejectingId(null);
                           setRejectReason("");
                         }}
-                        className="flex-1 text-xs bg-[#F0E9E2] text-[#6b5c52] rounded-lg py-2"
+                        className="flex-1 text-xs bg-[#E3E9E1] text-[#4a5a55] rounded-lg py-2"
                       >
                         Cancel
                       </button>
@@ -134,7 +134,7 @@ export default function AdminProductsPage() {
                     <button
                       onClick={() => handleApprove(product._id)}
                       disabled={updatingId === product._id}
-                      className="flex-1 text-xs bg-[#8C4A3A] hover:bg-[#7a3f31] text-white rounded-lg py-2.5 disabled:opacity-50 transition-colors"
+                      className="flex-1 text-xs bg-[#4A6B5A] hover:bg-[#3a5548] text-white rounded-lg py-2.5 disabled:opacity-50 transition-colors"
                     >
                       Approve
                     </button>

@@ -35,20 +35,20 @@ export default function MyOrdersPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAF8F5] px-10 py-12">
-        <p className="text-[#8A7F76] text-sm">Loading your orders...</p>
+      <div className="min-h-screen bg-[#F4F6F2] px-10 py-12">
+        <p className="text-[#6B7B76] text-sm">Loading your orders...</p>
       </div>
     );
   }
 
   if (orders.length === 0) {
     return (
-      <div className="min-h-screen bg-[#FAF8F5] px-10 py-12">
-        <h1 className="font-display text-4xl text-[#2B2420] mb-8">My Orders</h1>
-        <p className="text-[#8A7F76] text-sm">You haven't placed any orders yet.</p>
+      <div className="min-h-screen bg-[#F4F6F2] px-10 py-12">
+        <h1 className="font-display text-4xl text-[#1A2E2A] mb-8">My Orders</h1>
+        <p className="text-[#6B7B76] text-sm">You haven't placed any orders yet.</p>
         <button
           onClick={() => router.push("/shop")}
-          className="mt-4 text-[#8C4A3A] text-sm font-medium hover:underline"
+          className="mt-4 text-[#4A6B5A] text-sm font-medium hover:underline"
         >
           Start shopping →
         </button>
@@ -57,9 +57,9 @@ export default function MyOrdersPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] px-6 md:px-10 py-12">
+    <div className="min-h-screen bg-[#F4F6F2] px-6 md:px-10 py-12">
       <div className="max-w-3xl mx-auto">
-        <h1 className="font-display text-4xl text-[#2B2420] mb-8">My Orders</h1>
+        <h1 className="font-display text-4xl text-[#1A2E2A] mb-8">My Orders</h1>
 
         <div className="flex flex-col gap-4">
           {orders.map((order) => {
@@ -80,7 +80,7 @@ export default function MyOrdersPage() {
 
                 <div className="flex-1">
                   <div className="flex items-center justify-between mb-1">
-                    <p className="font-display text-base text-[#2B2420]">
+                    <p className="font-display text-base text-[#1A2E2A]">
                       {firstItem.name}{extraCount > 0 ? ` +${extraCount} more` : ""}
                     </p>
                     <span
@@ -100,7 +100,7 @@ export default function MyOrdersPage() {
                     </span>
                   </div>
 
-                  <p className="text-xs text-[#8A7F76] mb-1">
+                  <p className="text-xs text-[#6B7B76] mb-1">
                     Order #{order.orderNumber} ·{" "}
                     {new Date(order.createdAt).toLocaleDateString("en-US", {
                       day: "numeric",
@@ -110,8 +110,8 @@ export default function MyOrdersPage() {
                   </p>
 
                   <div className="flex items-center justify-between mt-2">
-                    <span className="text-sm text-[#8C4A3A] font-medium">Rs {order.total}</span>
-                    <span className="text-xs text-[#6b5c52] bg-[#F0E9E2] px-2.5 py-1 rounded-full">
+                    <span className="text-sm text-[#4A6B5A] font-medium">Rs {order.total}</span>
+                    <span className="text-xs text-[#4a5a55] bg-[#E3E9E1] px-2.5 py-1 rounded-full">
                       {statusLabels[order.orderStatus] || order.orderStatus}
                     </span>
                   </div>

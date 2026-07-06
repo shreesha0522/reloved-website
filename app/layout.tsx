@@ -28,7 +28,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${playfair.variable} ${poppins.variable} font-sans bg-[#FAF3EC] text-[#2B2420]`}>
+      <body className={`${playfair.variable} ${poppins.variable} font-sans bg-[#E8EDE6] text-[#1A2E2A]`}>
         <ConditionalHeader />
         {children}
       </body>

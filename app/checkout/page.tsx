@@ -62,8 +62,8 @@ export default function CheckoutPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] px-10 py-12">
-      <h1 className="font-display text-4xl text-[#8C4A3A] mb-10">Checkout</h1>
+    <div className="min-h-screen bg-[#F4F6F2] px-10 py-12">
+      <h1 className="font-display text-4xl text-[#4A6B5A] mb-10">Checkout</h1>
 
       <div className="flex flex-col md:flex-row gap-8 max-w-6xl">
 
@@ -73,23 +73,23 @@ export default function CheckoutPage() {
           {/* Shipping Address */}
           <div className="bg-white/60 rounded-xl p-6">
             <div className="flex justify-between items-start mb-4">
-              <h2 className="font-display text-xl text-[#2B2420]">Shipping Address</h2>
-              <button className="text-sm text-[#8C4A3A]">Edit</button>
+              <h2 className="font-display text-xl text-[#1A2E2A]">Shipping Address</h2>
+              <button className="text-sm text-[#4A6B5A]">Edit</button>
             </div>
-            <p className="text-sm text-[#2B2420]">
-              Shreesha Shrestha <span className="ml-2 text-xs bg-[#E7DDD4] px-2 py-0.5 rounded">HOME</span>
+            <p className="text-sm text-[#1A2E2A]">
+              Shreesha Shrestha <span className="ml-2 text-xs bg-[#D8E0D9] px-2 py-0.5 rounded">HOME</span>
             </p>
-            <p className="text-sm text-[#2B2420] mt-1">9847*****</p>
-            <p className="text-sm text-[#2B2420] mt-1">Dillibazar, pipolbot</p>
+            <p className="text-sm text-[#1A2E2A] mt-1">9847*****</p>
+            <p className="text-sm text-[#1A2E2A] mt-1">Dillibazar, pipolbot</p>
           </div>
 
           {/* Delivery or Pickup */}
           <div className="bg-white/60 rounded-xl p-6">
-            <h2 className="font-display text-xl text-[#2B2420] mb-4">Delivery or Pickup</h2>
+            <h2 className="font-display text-xl text-[#1A2E2A] mb-4">Delivery or Pickup</h2>
 
             <label
               className={`flex justify-between items-center rounded-lg px-4 py-3 mb-3 cursor-pointer border ${
-                deliveryOption === "standard" ? "border-[#8C4A3A] bg-[#f5e9e2]" : "border-[#E7DDD4]"
+                deliveryOption === "standard" ? "border-[#4A6B5A] bg-[#f5e9e2]" : "border-[#D8E0D9]"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -98,21 +98,21 @@ export default function CheckoutPage() {
                   name="delivery"
                   checked={deliveryOption === "standard"}
                   onChange={() => setDeliveryOption("standard")}
-                  className="accent-[#8C4A3A]"
+                  className="accent-[#4A6B5A]"
                 />
                 <div>
-                  <p className={`text-sm font-medium ${deliveryOption === "standard" ? "text-[#8C4A3A]" : "text-[#2B2420]"}`}>
+                  <p className={`text-sm font-medium ${deliveryOption === "standard" ? "text-[#4A6B5A]" : "text-[#1A2E2A]"}`}>
                     Standard Delivery
                   </p>
-                  <p className="text-xs text-[#8A7F76]">Get it by 17–18 May</p>
+                  <p className="text-xs text-[#6B7B76]">Get it by 17–18 May</p>
                 </div>
               </div>
-              <span className="text-sm text-[#2B2420]">Rs 180</span>
+              <span className="text-sm text-[#1A2E2A]">Rs 180</span>
             </label>
 
             <label
               className={`flex justify-between items-center rounded-lg px-4 py-3 cursor-pointer border ${
-                deliveryOption === "pickup" ? "border-[#8C4A3A] bg-[#f5e9e2]" : "border-[#E7DDD4]"
+                deliveryOption === "pickup" ? "border-[#4A6B5A] bg-[#f5e9e2]" : "border-[#D8E0D9]"
               }`}
             >
               <div className="flex items-center gap-3">
@@ -121,22 +121,22 @@ export default function CheckoutPage() {
                   name="delivery"
                   checked={deliveryOption === "pickup"}
                   onChange={() => setDeliveryOption("pickup")}
-                  className="accent-[#8C4A3A]"
+                  className="accent-[#4A6B5A]"
                 />
                 <div>
-                  <p className={`text-sm font-medium ${deliveryOption === "pickup" ? "text-[#8C4A3A]" : "text-[#2B2420]"}`}>
+                  <p className={`text-sm font-medium ${deliveryOption === "pickup" ? "text-[#4A6B5A]" : "text-[#1A2E2A]"}`}>
                     Local Pickup
                   </p>
-                  <p className="text-xs text-[#8A7F76]">Available at Kathmandu Boutique</p>
+                  <p className="text-xs text-[#6B7B76]">Available at Kathmandu Boutique</p>
                 </div>
               </div>
-              <span className="text-sm text-[#2B2420]">Free</span>
+              <span className="text-sm text-[#1A2E2A]">Free</span>
             </label>
           </div>
 
           {/* Package — lists all items from the real cart */}
           <div className="bg-white/60 rounded-xl p-6">
-            <p className="text-sm text-[#2B2420] mb-4">📦 Package 1 of 1 ({totalItemCount} item{totalItemCount !== 1 ? "s" : ""})</p>
+            <p className="text-sm text-[#1A2E2A] mb-4">📦 Package 1 of 1 ({totalItemCount} item{totalItemCount !== 1 ? "s" : ""})</p>
 
             <div className="flex flex-col gap-4">
               {items.map((item) => (
@@ -147,14 +147,14 @@ export default function CheckoutPage() {
                     className="w-20 h-20 rounded-lg object-cover"
                   />
                   <div>
-                    <p className="font-display text-base text-[#2B2420]">{item.name}</p>
+                    <p className="font-display text-base text-[#1A2E2A]">{item.name}</p>
                     <p className="text-sm mt-1">
-                      <span className="text-[#8C4A3A] font-medium">Rs {item.price}</span>
+                      <span className="text-[#4A6B5A] font-medium">Rs {item.price}</span>
                       {item.originalPrice && (
-                        <span className="text-[#8A7F76] line-through ml-2">Rs {item.originalPrice}</span>
+                        <span className="text-[#6B7B76] line-through ml-2">Rs {item.originalPrice}</span>
                       )}
                     </p>
-                    <p className="text-xs text-[#8A7F76] mt-1">Qty: {item.qty}</p>
+                    <p className="text-xs text-[#6B7B76] mt-1">Qty: {item.qty}</p>
                   </div>
                 </div>
               ))}
@@ -164,52 +164,52 @@ export default function CheckoutPage() {
           {/* Invoice and Contact Info */}
           <div className="bg-white/60 rounded-xl p-6">
             <div className="flex justify-between items-start mb-4">
-              <h2 className="font-display text-xl text-[#2B2420]">Invoice and Contact Info</h2>
-              <button className="text-sm text-[#8C4A3A]">Edit</button>
+              <h2 className="font-display text-xl text-[#1A2E2A]">Invoice and Contact Info</h2>
+              <button className="text-sm text-[#4A6B5A]">Edit</button>
             </div>
-            <p className="text-sm text-[#2B2420]">✉️ shreesha.shrestha@example.com</p>
+            <p className="text-sm text-[#1A2E2A]">✉️ shreesha.shrestha@example.com</p>
           </div>
         </div>
 
         {/* Right column — Order Detail */}
         <div className="w-full md:w-96 bg-white/60 rounded-xl p-6 h-fit">
-          <h2 className="font-display text-xl text-[#2B2420] mb-4">Order Detail</h2>
+          <h2 className="font-display text-xl text-[#1A2E2A] mb-4">Order Detail</h2>
 
           <div className="flex justify-between text-sm mb-2">
-            <span className="text-[#2B2420]">Item Total ({totalItemCount} items)</span>
-            <span className="text-[#2B2420]">Rs {itemTotal}</span>
+            <span className="text-[#1A2E2A]">Item Total ({totalItemCount} items)</span>
+            <span className="text-[#1A2E2A]">Rs {itemTotal}</span>
           </div>
 
           <div className="flex justify-between text-sm mb-4">
-            <span className="text-[#2B2420]">Delivery fee</span>
-            <span className="text-[#2B2420]">{deliveryFee === 0 ? "Free" : `Rs ${deliveryFee}`}</span>
+            <span className="text-[#1A2E2A]">Delivery fee</span>
+            <span className="text-[#1A2E2A]">{deliveryFee === 0 ? "Free" : `Rs ${deliveryFee}`}</span>
           </div>
 
-          <div className="h-px bg-[#E7DDD4] my-3" />
+          <div className="h-px bg-[#D8E0D9] my-3" />
 
           <div className="flex justify-between text-base font-medium mb-5">
-            <span className="text-[#2B2420]">Total</span>
-            <span className="text-[#8C4A3A]">Rs {total}</span>
+            <span className="text-[#1A2E2A]">Total</span>
+            <span className="text-[#4A6B5A]">Rs {total}</span>
           </div>
 
           <button
             onClick={handleProceedToPay}
             disabled={placing}
-            className="w-full bg-[#8C4A3A] hover:bg-[#7a3f31] disabled:opacity-60 text-white font-medium py-3 rounded-lg transition-colors text-sm tracking-wide mb-3"
+            className="w-full bg-[#4A6B5A] hover:bg-[#3a5548] disabled:opacity-60 text-white font-medium py-3 rounded-lg transition-colors text-sm tracking-wide mb-3"
           >
             {placing ? "Placing order..." : "Proceed to Pay"}
           </button>
 
-          <p className="text-center text-xs text-[#8A7F76] mb-4">
+          <p className="text-center text-xs text-[#6B7B76] mb-4">
             By proceeding, you agree to our Terms of Service and Privacy Policy.
           </p>
 
-          <div className="h-px bg-[#E7DDD4] my-3" />
+          <div className="h-px bg-[#D8E0D9] my-3" />
 
-          <p className="text-xs text-[#8A7F76] flex items-center gap-2 mb-2">
+          <p className="text-xs text-[#6B7B76] flex items-center gap-2 mb-2">
             🛡️ Secure Payment Gateway
           </p>
-          <p className="text-xs text-[#8A7F76] flex items-center gap-2">
+          <p className="text-xs text-[#6B7B76] flex items-center gap-2">
             🚚 Tracked Shipping Worldwide
           </p>
         </div>

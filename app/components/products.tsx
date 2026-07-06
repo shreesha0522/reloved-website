@@ -8,7 +8,7 @@ const filters = ["All", "New Arrivals", "Best Seller", "Top Rated"];
 
 function Stars({ count }: { count: number }) {
   return (
-    <span className="text-xs text-[#d6a157]">
+    <span className="text-xs text-[#b8935a]">
       {"★".repeat(Math.round(count))}
       {"☆".repeat(5 - Math.round(count))}
     </span>
@@ -40,7 +40,7 @@ export default function Products() {
 }
 
   return (
-    <section className="bg-[#F6E9E5] px-6 md:px-16 py-16 text-center">
+    <section className="bg-[#E8EDE6] px-6 md:px-16 py-16 text-center">
       <h2 className="font-display text-3xl mb-6">Our Trendy Products</h2>
 
       {/* Filter buttons */}
@@ -51,8 +51,8 @@ export default function Products() {
             onClick={() => setActiveFilter(filter)}
             className={`text-sm rounded-full px-5 py-2.5 border transition-colors ${
               activeFilter === filter
-                ? "bg-[#8C4A3A] text-white border-[#8C4A3A]"
-                : "bg-white text-[#2B2420] border-[#E7DDD4]"
+                ? "bg-[#4A6B5A] text-white border-[#4A6B5A]"
+                : "bg-white text-[#1A2E2A] border-[#D8E0D9]"
             }`}
           >
             {filter}
@@ -77,8 +77,8 @@ export default function Products() {
       {/* No products */}
       {!loading && products.length === 0 && (
         <div className="py-16 text-center">
-          <p className="text-[#8A7F76] text-lg mb-2">No products yet.</p>
-          <p className="text-[#8A7F76] text-sm">Products added by sellers will appear here.</p>
+          <p className="text-[#6B7B76] text-lg mb-2">No products yet.</p>
+          <p className="text-[#6B7B76] text-sm">Products added by sellers will appear here.</p>
         </div>
       )}
 
@@ -101,20 +101,20 @@ export default function Products() {
                   }}
                 />
               </div>
-              <h4 className="text-[15px] mb-1.5 text-[#2B2420] font-medium">
+              <h4 className="text-[15px] mb-1.5 text-[#1A2E2A] font-medium">
                 {product.name}
               </h4>
               <div className="flex items-center gap-1 mb-2">
                 <Stars count={product.rating} />
-                <span className="text-xs text-[#8A7F76]">({product.reviews})</span>
+                <span className="text-xs text-[#6B7B76]">({product.reviews})</span>
               </div>
               <div className="flex items-center justify-between">
-                <div className="text-[#8C4A3A] font-semibold text-[15px]">
+                <div className="text-[#4A6B5A] font-semibold text-[15px]">
                   Rs {product.price.toLocaleString()}
                 </div>
                 <button
                   onClick={(e) => handleAddToCart(e, product._id)}
-                  className="w-8 h-8 rounded-full border border-[#E7DDD4] flex items-center justify-center text-[#8C4A3A] hover:bg-[#8C4A3A] hover:text-white transition-colors"
+                  className="w-8 h-8 rounded-full border border-[#D8E0D9] flex items-center justify-center text-[#4A6B5A] hover:bg-[#4A6B5A] hover:text-white transition-colors"
                   title="Add to cart"
                 >
                   <svg
@@ -140,7 +140,7 @@ export default function Products() {
       )}
 
       {!loading && products.length > 0 && (
-        <button className="mt-12 border border-[#8C4A3A] text-[#8C4A3A] hover:bg-[#8C4A3A] hover:text-white transition-colors text-sm px-8 py-3 rounded-lg">
+        <button className="mt-12 border border-[#4A6B5A] text-[#4A6B5A] hover:bg-[#4A6B5A] hover:text-white transition-colors text-sm px-8 py-3 rounded-lg">
           Load More
         </button>
       )}

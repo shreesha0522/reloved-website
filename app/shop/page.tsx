@@ -5,16 +5,16 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 
 const shopCategories = [
-  { name: "Jewelry Collection", slug: "jewelry",     img: "jewelry",     desc: "Handcrafted rings, earrings & necklaces" },
-  { name: "Home Decor",         slug: "home-decor",  img: "home-decor",  desc: "Unique pieces for your living space" },
-  { name: "Accessories",        slug: "accessories", img: "accessories", desc: "Bags, belts & everyday essentials" },
-  { name: "Candles",            slug: "candles",     img: "candles",     desc: "Hand-poured soy & beeswax candles" },
-  { name: "Crochet",            slug: "crochet",     img: "crochet",     desc: "Woven with love, worn with joy" },
+  { name: "Clothing",   slug: "clothing",   img: "clothing",   desc: "Pre-loved fashion, gently worn" },
+  { name: "Furniture",  slug: "furniture",  img: "furniture",  desc: "Second-hand pieces with character" },
+  { name: "Books",      slug: "books",      img: "books",      desc: "Well-read stories, ready for a new home" },
+  { name: "Accessories",slug: "accessories",img: "accessories",desc: "Bags, belts & everyday essentials" },
+  { name: "Home Goods", slug: "home-goods", img: "home-goods", desc: "Thrifted treasures for your space" },
 ];
 
 function Stars({ count }: { count: number }) {
   return (
-    <span className="text-xs text-[#d6a157]">
+    <span className="text-xs text-[#b8935a]">
       {"★".repeat(Math.round(count))}
       {"☆".repeat(5 - Math.round(count))}
     </span>
@@ -36,32 +36,32 @@ export default function ShopPage() {
     load();
   }, []);
 
-async function handleAddToCart(e: React.MouseEvent, product: Product) {
-  e.preventDefault();
-  e.stopPropagation();
-  const result = await addToCart(product._id, 1);
-  if (result.success) {
-    setJustAdded(product._id);
-    setTimeout(() => setJustAdded(null), 1500);
-  } else {
-    alert(result.message || "Could not add to cart.");
+  async function handleAddToCart(e: React.MouseEvent, product: Product) {
+    e.preventDefault();
+    e.stopPropagation();
+    const result = await addToCart(product._id, 1);
+    if (result.success) {
+      setJustAdded(product._id);
+      setTimeout(() => setJustAdded(null), 1500);
+    } else {
+      alert(result.message || "Could not add to cart.");
+    }
   }
-}
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5]">
+    <div className="min-h-screen bg-[#F4F6F2]">
 
       {/* Hero */}
-      <div className="bg-[#FAF3EC] px-4 md:px-16 py-10 md:py-14 text-center">
-        <h1 className="font-display text-3xl md:text-5xl text-[#2B2420] mb-3">Our Shop</h1>
-        <p className="text-sm md:text-base text-[#8A7F76] max-w-md mx-auto">
-          Thoughtfully handcrafted pieces made with love and care.
+      <div className="bg-[#E8EDE6] px-4 md:px-16 py-10 md:py-14 text-center">
+        <h1 className="font-display text-3xl md:text-5xl text-[#1A2E2A] mb-3">Our Shop</h1>
+        <p className="text-sm md:text-base text-[#6B7B76] max-w-md mx-auto">
+          Pre-loved finds, given a second story.
         </p>
       </div>
 
       {/* Categories grid */}
       <div className="px-4 md:px-16 py-10">
-        <h2 className="font-display text-2xl md:text-3xl text-[#2B2420] mb-6">Browse by Category</h2>
+        <h2 className="font-display text-2xl md:text-3xl text-[#1A2E2A] mb-6">Browse by Category</h2>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 md:gap-4 mb-14">
           {shopCategories.map((cat) => (
             <Link
@@ -84,7 +84,7 @@ async function handleAddToCart(e: React.MouseEvent, product: Product) {
         </div>
 
         {/* Featured products */}
-        <h2 className="font-display text-2xl md:text-3xl text-[#2B2420] mb-6">Featured Products</h2>
+        <h2 className="font-display text-2xl md:text-3xl text-[#1A2E2A] mb-6">Featured Products</h2>
 
         {loading && (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
@@ -101,7 +101,7 @@ async function handleAddToCart(e: React.MouseEvent, product: Product) {
         )}
 
         {!loading && products.length === 0 && (
-          <p className="text-[#8A7F76] text-sm py-10 text-center">No products yet.</p>
+          <p className="text-[#6B7B76] text-sm py-10 text-center">No products yet.</p>
         )}
 
         {!loading && products.length > 0 && (
@@ -121,16 +121,23 @@ async function handleAddToCart(e: React.MouseEvent, product: Product) {
                       `https://picsum.photos/seed/${product._id}/400/400`;
                   }}
                 />
-                <div className="p-4">
-                  <h2 className="font-display text-base md:text-lg text-[#2B2420] mb-1">
-                    {product.name}
-                  </h2>
-                  <div className="flex items-center gap-1 mb-2">
-                    <Stars count={product.rating} />
-                    <span className="text-[#8A7F76] text-xs">({product.reviews})</span>
-                  </div>
+              <div className="p-4">
+  <h2 className="font-display text-base md:text-lg text-[#1A2E2A] mb-1">
+    {product.name}
+  </h2>
+  <div className="flex items-center gap-2 mb-2">
+    <div className="flex items-center gap-1">
+      <Stars count={product.rating} />
+      <span className="text-[#6B7B76] text-xs">({product.reviews})</span>
+    </div>
+    {product.condition && (
+      <span className="text-[10px] font-medium text-[#4A6B5A] bg-[#E8EDE6] px-2 py-0.5 rounded-full">
+        {product.condition}
+      </span>
+    )}
+  </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[#8C4A3A] font-semibold text-sm">
+                    <span className="text-[#4A6B5A] font-semibold text-sm">
                       Rs {product.price.toLocaleString()}
                     </span>
                     <button
@@ -138,8 +145,8 @@ async function handleAddToCart(e: React.MouseEvent, product: Product) {
                       title={justAdded === product._id ? "Added to cart" : "Add to cart"}
                       className={`w-8 h-8 flex items-center justify-center rounded-full border transition-all duration-200 ${
                         justAdded === product._id
-                          ? "bg-[#8C4A3A] border-[#8C4A3A] text-white"
-                          : "bg-white border-[#E7DDD4] text-[#8C4A3A] hover:border-[#8C4A3A] hover:bg-[#F6E9E5]"
+                          ? "bg-[#4A6B5A] border-[#4A6B5A] text-white"
+                          : "bg-white border-[#D8E0D9] text-[#4A6B5A] hover:border-[#4A6B5A] hover:bg-[#E8EDE6]"
                       }`}
                     >
                       {justAdded === product._id ? (

@@ -87,16 +87,16 @@ export default function AccountPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#FAF8F5] px-10 py-12">
-        <p className="text-[#8A7F76] text-sm">Loading your account...</p>
+      <div className="min-h-screen bg-[#F4F6F2] px-10 py-12">
+        <p className="text-[#6B7B76] text-sm">Loading your account...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] px-6 md:px-10 py-12">
+    <div className="min-h-screen bg-[#F4F6F2] px-6 md:px-10 py-12">
       <div className="max-w-xl mx-auto">
-        <h1 className="font-display text-4xl text-[#2B2420] mb-8">My Account</h1>
+        <h1 className="font-display text-4xl text-[#1A2E2A] mb-8">My Account</h1>
 
         {message && (
           <div
@@ -112,63 +112,63 @@ export default function AccountPage() {
 
         <form onSubmit={handleSave} className="bg-white/60 rounded-xl p-6 flex flex-col gap-5">
           <div>
-            <label className="block text-sm text-[#2B2420] mb-1.5">Username</label>
+            <label className="block text-sm text-[#1A2E2A] mb-1.5">Username</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
-              className="w-full border border-[#E7DDD4] rounded-lg px-4 py-2.5 text-sm bg-white text-[#2B2420] focus:outline-none focus:ring-2 focus:ring-[#8C4A3A]/30"
+              className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
           </div>
 
           <div>
-            <label className="block text-sm text-[#2B2420] mb-1.5">Email</label>
+            <label className="block text-sm text-[#1A2E2A] mb-1.5">Email</label>
             <input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="w-full border border-[#E7DDD4] rounded-lg px-4 py-2.5 text-sm bg-white text-[#2B2420] focus:outline-none focus:ring-2 focus:ring-[#8C4A3A]/30"
+              className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
           </div>
 
-          <div className="h-px bg-[#E7DDD4] my-1" />
+          <div className="h-px bg-[#D8E0D9] my-1" />
 
-          <p className="text-sm text-[#8A7F76]">
+          <p className="text-sm text-[#6B7B76]">
             Leave the password fields blank if you don't want to change it.
           </p>
 
           <div>
-            <label className="block text-sm text-[#2B2420] mb-1.5">Current Password</label>
+            <label className="block text-sm text-[#1A2E2A] mb-1.5">Current Password</label>
             <input
               type="password"
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full border border-[#E7DDD4] rounded-lg px-4 py-2.5 text-sm bg-white text-[#2B2420] focus:outline-none focus:ring-2 focus:ring-[#8C4A3A]/30"
+              className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-[#2B2420] mb-1.5">New Password</label>
+              <label className="block text-sm text-[#1A2E2A] mb-1.5">New Password</label>
               <input
                 type="password"
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full border border-[#E7DDD4] rounded-lg px-4 py-2.5 text-sm bg-white text-[#2B2420] focus:outline-none focus:ring-2 focus:ring-[#8C4A3A]/30"
+                className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
               />
             </div>
             <div>
-              <label className="block text-sm text-[#2B2420] mb-1.5">Confirm New Password</label>
+              <label className="block text-sm text-[#1A2E2A] mb-1.5">Confirm New Password</label>
               <input
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full border border-[#E7DDD4] rounded-lg px-4 py-2.5 text-sm bg-white text-[#2B2420] focus:outline-none focus:ring-2 focus:ring-[#8C4A3A]/30"
+                className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
               />
             </div>
           </div>
@@ -176,7 +176,7 @@ export default function AccountPage() {
           <button
             type="submit"
             disabled={saving}
-            className="w-full bg-[#8C4A3A] hover:bg-[#7a3f31] disabled:opacity-60 text-white font-medium py-3 rounded-lg transition-colors text-sm tracking-wide mt-2"
+            className="w-full bg-[#4A6B5A] hover:bg-[#3a5548] disabled:opacity-60 text-white font-medium py-3 rounded-lg transition-colors text-sm tracking-wide mt-2"
           >
             {saving ? "Saving..." : "Save Changes"}
           </button>
@@ -184,34 +184,34 @@ export default function AccountPage() {
 
         {profile && profile.role === "user" && (
           <div className="bg-white/60 rounded-xl p-6 mt-6">
-            <h2 className="font-display text-xl text-[#2B2420] mb-2">Become a Seller</h2>
+            <h2 className="font-display text-xl text-[#1A2E2A] mb-2">Become a Seller</h2>
 
             {profile.sellerRequestStatus === "pending" ? (
-              <p className="text-sm text-[#8A7F76]">
+              <p className="text-sm text-[#6B7B76]">
                 Your request is pending review. We'll email you once it's approved.
               </p>
             ) : profile.sellerRequestStatus === "rejected" ? (
               <>
-                <p className="text-sm text-[#8A7F76] mb-4">
+                <p className="text-sm text-[#6B7B76] mb-4">
                   Your previous request was not approved. You can submit a new request below.
                 </p>
                 <button
                   onClick={handleRequestSeller}
                   disabled={requestingSeller}
-                  className="bg-[#8C4A3A] hover:bg-[#7a3f31] disabled:opacity-60 text-white font-medium px-6 py-2.5 rounded-lg transition-colors text-sm"
+                  className="bg-[#4A6B5A] hover:bg-[#3a5548] disabled:opacity-60 text-white font-medium px-6 py-2.5 rounded-lg transition-colors text-sm"
                 >
                   {requestingSeller ? "Submitting..." : "Request again"}
                 </button>
               </>
             ) : (
               <>
-                <p className="text-sm text-[#8A7F76] mb-4">
+                <p className="text-sm text-[#6B7B76] mb-4">
                   Want to sell your handmade products on our platform? Submit a request and our team will review it.
                 </p>
                 <button
                   onClick={handleRequestSeller}
                   disabled={requestingSeller}
-                  className="bg-[#8C4A3A] hover:bg-[#7a3f31] disabled:opacity-60 text-white font-medium px-6 py-2.5 rounded-lg transition-colors text-sm"
+                  className="bg-[#4A6B5A] hover:bg-[#3a5548] disabled:opacity-60 text-white font-medium px-6 py-2.5 rounded-lg transition-colors text-sm"
                 >
                   {requestingSeller ? "Submitting..." : "Request to become a seller"}
                 </button>

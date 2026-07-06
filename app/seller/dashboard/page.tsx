@@ -66,12 +66,12 @@ export default function SellerDashboardPage() {
   }
   if (checking || !isSeller) return null;
   return (
-    <div className="min-h-screen bg-[#FAF8F5] px-6 md:px-16 py-10">
+    <div className="min-h-screen bg-[#F4F6F2] px-6 md:px-16 py-10">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="font-display text-3xl md:text-4xl text-[#2B2420]">Seller Dashboard</h1>
+        <h1 className="font-display text-3xl md:text-4xl text-[#1A2E2A]">Seller Dashboard</h1>
         <Link
           href="/seller/products/new"
-          className="bg-[#8C4A3A] hover:bg-[#7a3f31] text-white font-medium px-5 py-2.5 rounded-lg transition-colors text-sm"
+          className="bg-[#4A6B5A] hover:bg-[#3a5548] text-white font-medium px-5 py-2.5 rounded-lg transition-colors text-sm"
         >
           + Add product
         </Link>
@@ -81,8 +81,8 @@ export default function SellerDashboardPage() {
           onClick={() => setTab("products")}
           className={`text-sm px-4 py-2 rounded-full border transition-colors ${
             tab === "products"
-              ? "bg-[#8C4A3A] text-white border-[#8C4A3A]"
-              : "bg-white text-[#2B2420] border-[#E7DDD4]"
+              ? "bg-[#4A6B5A] text-white border-[#4A6B5A]"
+              : "bg-white text-[#1A2E2A] border-[#D8E0D9]"
           }`}
         >
           Your Products ({products.length})
@@ -91,8 +91,8 @@ export default function SellerDashboardPage() {
           onClick={() => setTab("orders")}
           className={`text-sm px-4 py-2 rounded-full border transition-colors ${
             tab === "orders"
-              ? "bg-[#8C4A3A] text-white border-[#8C4A3A]"
-              : "bg-white text-[#2B2420] border-[#E7DDD4]"
+              ? "bg-[#4A6B5A] text-white border-[#4A6B5A]"
+              : "bg-white text-[#1A2E2A] border-[#D8E0D9]"
           }`}
         >
           Orders ({orders.length})
@@ -100,9 +100,9 @@ export default function SellerDashboardPage() {
       </div>
       {tab === "products" && (
         loadingProducts ? (
-          <p className="text-sm text-[#8A7F76]">Loading...</p>
+          <p className="text-sm text-[#6B7B76]">Loading...</p>
         ) : products.length === 0 ? (
-          <p className="text-sm text-[#8A7F76]">You haven't added any products yet.</p>
+          <p className="text-sm text-[#6B7B76]">You haven't added any products yet.</p>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {products.map((product) => (
@@ -123,10 +123,10 @@ export default function SellerDashboardPage() {
   </div>
   <div className="p-4">
     <h4 className="font-display text-base mb-1">{product.name}</h4>
-    <p className="text-xs text-[#8A7F76] mb-2 capitalize">{product.category}</p>
+    <p className="text-xs text-[#6B7B76] mb-2 capitalize">{product.category}</p>
     <div className="flex items-center justify-between mb-3">
-      <span className="text-[#8C4A3A] font-semibold text-sm">Rs {product.price}</span>
-      <span className="text-xs text-[#8A7F76]">Stock: {product.stock}</span>
+      <span className="text-[#4A6B5A] font-semibold text-sm">Rs {product.price}</span>
+      <span className="text-xs text-[#6B7B76]">Stock: {product.stock}</span>
     </div>
     {product.status === "rejected" && product.rejectionReason && (
       <div className="mb-3 px-3 py-2 bg-red-50 border border-red-200 rounded-lg">
@@ -138,7 +138,7 @@ export default function SellerDashboardPage() {
                <div className="flex gap-2">
                     <button
                       onClick={() => router.push(`/seller/products/edit/${product._id}`)}
-                      className="flex-1 text-xs text-[#8C4A3A] border border-[#E7DDD4] rounded-lg py-2 hover:bg-[#F6E9E5] transition-colors"
+                      className="flex-1 text-xs text-[#4A6B5A] border border-[#D8E0D9] rounded-lg py-2 hover:bg-[#E8EDE6] transition-colors"
                     >
                       Edit
                     </button>
@@ -157,20 +157,20 @@ export default function SellerDashboardPage() {
       )}
       {tab === "orders" && (
         loadingOrders ? (
-          <p className="text-sm text-[#8A7F76]">Loading...</p>
+          <p className="text-sm text-[#6B7B76]">Loading...</p>
         ) : orders.length === 0 ? (
-          <p className="text-sm text-[#8A7F76]">No orders yet for your products.</p>
+          <p className="text-sm text-[#6B7B76]">No orders yet for your products.</p>
         ) : (
           <div className="flex flex-col gap-4 max-w-3xl">
             {orders.map((order) => (
               <div key={order._id} className="bg-white rounded-xl p-5">
                 <div className="flex justify-between items-center mb-3">
-                  <p className="text-sm font-medium text-[#2B2420]">Order #{order.orderNumber}</p>
+                  <p className="text-sm font-medium text-[#1A2E2A]">Order #{order.orderNumber}</p>
                   <select
                     value={order.orderStatus}
                     disabled={updatingId === order._id}
                     onChange={(e) => handleStatusChange(order._id, e.target.value)}
-                    className="text-xs bg-[#F0E9E2] text-[#6b5c52] px-2.5 py-1.5 rounded-full capitalize border-none disabled:opacity-50"
+                    className="text-xs bg-[#E3E9E1] text-[#4a5a55] px-2.5 py-1.5 rounded-full capitalize border-none disabled:opacity-50"
                   >
                     {STATUS_OPTIONS.map((status) => (
                       <option key={status} value={status}>
@@ -180,13 +180,13 @@ export default function SellerDashboardPage() {
                   </select>
                 </div>
                 {order.items.map((item) => (
-                  <div key={item.id} className="flex items-center gap-3 py-2 border-t border-[#F0E9E2]">
+                  <div key={item.id} className="flex items-center gap-3 py-2 border-t border-[#E3E9E1]">
                     <img src={item.image} alt={item.name} className="w-12 h-12 rounded-lg object-cover" />
                     <div className="flex-1">
-                      <p className="text-sm text-[#2B2420]">{item.name}</p>
-                      <p className="text-xs text-[#8A7F76]">Qty: {item.qty}</p>
+                      <p className="text-sm text-[#1A2E2A]">{item.name}</p>
+                      <p className="text-xs text-[#6B7B76]">Qty: {item.qty}</p>
                     </div>
-                    <span className="text-sm text-[#8C4A3A] font-medium">Rs {item.price * item.qty}</span>
+                    <span className="text-sm text-[#4A6B5A] font-medium">Rs {item.price * item.qty}</span>
                   </div>
                 ))}
               </div>

@@ -38,16 +38,16 @@ export default function SearchResultsPage() {
 }
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] px-6 md:px-16 py-10">
-      <h1 className="font-display text-3xl md:text-4xl text-[#2B2420] mb-2">
+    <div className="min-h-screen bg-[#F4F6F2] px-6 md:px-16 py-10">
+      <h1 className="font-display text-3xl md:text-4xl text-[#1A2E2A] mb-2">
         Search results for "{query}"
       </h1>
-      <p className="text-sm text-[#8A7F76] mb-8">
+      <p className="text-sm text-[#6B7B76] mb-8">
         {loading ? "Searching..." : `${results.length} result${results.length !== 1 ? "s" : ""} found`}
       </p>
 
       {!loading && results.length === 0 && (
-        <p className="text-sm text-[#8A7F76]">
+        <p className="text-sm text-[#6B7B76]">
           No products matched "{query}". Try a different search term.
         </p>
       )}
@@ -66,12 +66,12 @@ export default function SearchResultsPage() {
             />
             <div className="p-4">
               <h4 className="font-display text-base mb-1">{product.name}</h4>
-              <p className="text-xs text-[#8A7F76] mb-2 capitalize">{product.category}</p>
+              <p className="text-xs text-[#6B7B76] mb-2 capitalize">{product.category}</p>
               <div className="flex items-center justify-between">
-                <span className="text-[#8C4A3A] font-semibold text-sm">Rs {product.price}</span>
+                <span className="text-[#4A6B5A] font-semibold text-sm">Rs {product.price}</span>
                 <button
                   onClick={(e) => handleAddToCart(e, product._id)}
-                  className="w-8 h-8 rounded-full border border-[#E7DDD4] flex items-center justify-center text-[#8C4A3A] hover:bg-[#8C4A3A] hover:text-white transition-colors"
+                  className="w-8 h-8 rounded-full border border-[#D8E0D9] flex items-center justify-center text-[#4A6B5A] hover:bg-[#4A6B5A] hover:text-white transition-colors"
                   title="Add to cart"
                 >
                   <svg

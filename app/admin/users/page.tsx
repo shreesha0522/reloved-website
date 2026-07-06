@@ -139,9 +139,9 @@ export default function AdminUsersPage() {
   if (checking || !isAdmin) return null;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] px-6 md:px-16 py-10">
+    <div className="min-h-screen bg-[#F4F6F2] px-6 md:px-16 py-10">
       <div className="flex items-center justify-between mb-6">
-        <h1 className="font-display text-3xl md:text-4xl text-[#2B2420]">User Management</h1>
+        <h1 className="font-display text-3xl md:text-4xl text-[#1A2E2A]">User Management</h1>
       </div>
 
       <div className="flex gap-2 mb-8">
@@ -149,8 +149,8 @@ export default function AdminUsersPage() {
           onClick={() => setTab("all")}
           className={`text-sm px-4 py-2 rounded-full border transition-colors ${
             tab === "all"
-              ? "bg-[#8C4A3A] text-white border-[#8C4A3A]"
-              : "bg-white text-[#2B2420] border-[#E7DDD4]"
+              ? "bg-[#4A6B5A] text-white border-[#4A6B5A]"
+              : "bg-white text-[#1A2E2A] border-[#D8E0D9]"
           }`}
         >
           All Users
@@ -159,8 +159,8 @@ export default function AdminUsersPage() {
           onClick={() => setTab("requests")}
           className={`text-sm px-4 py-2 rounded-full border transition-colors ${
             tab === "requests"
-              ? "bg-[#8C4A3A] text-white border-[#8C4A3A]"
-              : "bg-white text-[#2B2420] border-[#E7DDD4]"
+              ? "bg-[#4A6B5A] text-white border-[#4A6B5A]"
+              : "bg-white text-[#1A2E2A] border-[#D8E0D9]"
           }`}
         >
           Seller Requests ({sellerRequests.length})
@@ -179,7 +179,7 @@ export default function AdminUsersPage() {
                 setPage(1);
                 setSearch(e.target.value);
               }}
-              className="text-sm px-4 py-2.5 rounded-full border border-[#E7DDD4] bg-white text-[#2B2420] w-64 focus:outline-none"
+              className="text-sm px-4 py-2.5 rounded-full border border-[#D8E0D9] bg-white text-[#1A2E2A] w-64 focus:outline-none"
             />
             <select
               value={roleFilter}
@@ -187,7 +187,7 @@ export default function AdminUsersPage() {
                 setPage(1);
                 setRoleFilter(e.target.value);
               }}
-              className="text-sm px-4 py-2.5 rounded-full border border-[#E7DDD4] bg-white text-[#2B2420]"
+              className="text-sm px-4 py-2.5 rounded-full border border-[#D8E0D9] bg-white text-[#1A2E2A]"
             >
               <option value="">All roles</option>
               {ROLE_OPTIONS.map((r) => (
@@ -202,7 +202,7 @@ export default function AdminUsersPage() {
                 setPage(1);
                 setStatusFilter(e.target.value);
               }}
-              className="text-sm px-4 py-2.5 rounded-full border border-[#E7DDD4] bg-white text-[#2B2420]"
+              className="text-sm px-4 py-2.5 rounded-full border border-[#D8E0D9] bg-white text-[#1A2E2A]"
             >
               <option value="">All statuses</option>
               <option value="active">Active</option>
@@ -211,9 +211,9 @@ export default function AdminUsersPage() {
           </div>
 
           {loading ? (
-            <p className="text-sm text-[#8A7F76]">Loading...</p>
+            <p className="text-sm text-[#6B7B76]">Loading...</p>
           ) : users.length === 0 ? (
-            <p className="text-sm text-[#8A7F76]">No users found.</p>
+            <p className="text-sm text-[#6B7B76]">No users found.</p>
           ) : (
             <div className="flex flex-col gap-4 max-w-4xl">
               {users.map((user) => (
@@ -222,9 +222,9 @@ export default function AdminUsersPage() {
   className="bg-white rounded-xl p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
 >
   <div className="flex-1">
-    <p className="text-sm font-medium text-[#2B2420]">{user.username}</p>
-    <p className="text-xs text-[#8A7F76]">{user.email}</p>
-    <p className="text-xs text-[#8A7F76] mt-1">
+    <p className="text-sm font-medium text-[#1A2E2A]">{user.username}</p>
+    <p className="text-xs text-[#6B7B76]">{user.email}</p>
+    <p className="text-xs text-[#6B7B76] mt-1">
       Joined {new Date(user.createdAt).toLocaleDateString("en-US", {
         day: "numeric",
         month: "short",
@@ -238,7 +238,7 @@ export default function AdminUsersPage() {
       value={user.role}
       disabled={updatingId === user._id}
       onChange={(e) => handleRoleChange(user._id, e.target.value)}
-      className="text-xs bg-[#F0E9E2] text-[#6b5c52] px-2.5 py-1.5 rounded-full capitalize border-none disabled:opacity-50"
+      className="text-xs bg-[#E3E9E1] text-[#4a5a55] px-2.5 py-1.5 rounded-full capitalize border-none disabled:opacity-50"
     >
       {ROLE_OPTIONS.map((role) => (
         <option key={role} value={role}>
@@ -252,8 +252,8 @@ export default function AdminUsersPage() {
       disabled={updatingId === user._id}
       className={`text-xs px-3 py-1.5 rounded-full transition-colors disabled:opacity-50 whitespace-nowrap ${
         user.isActive === false
-          ? "bg-[#F0E9E2] text-[#6b5c52] hover:bg-[#e8ddd2]"
-          : "bg-[#8C4A3A] text-white hover:bg-[#7a3f31]"
+          ? "bg-[#E3E9E1] text-[#4a5a55] hover:bg-[#d5ded6]"
+          : "bg-[#4A6B5A] text-white hover:bg-[#3a5548]"
       }`}
     >
       {user.isActive === false ? "Activate" : "Deactivate"}
@@ -277,17 +277,17 @@ export default function AdminUsersPage() {
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page === 1}
-                className="text-sm px-4 py-2 rounded-full border border-[#E7DDD4] bg-white text-[#2B2420] disabled:opacity-40"
+                className="text-sm px-4 py-2 rounded-full border border-[#D8E0D9] bg-white text-[#1A2E2A] disabled:opacity-40"
               >
                 Previous
               </button>
-              <span className="text-sm text-[#8A7F76]">
+              <span className="text-sm text-[#6B7B76]">
                 Page {page} of {totalPages}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
                 disabled={page === totalPages}
-                className="text-sm px-4 py-2 rounded-full border border-[#E7DDD4] bg-white text-[#2B2420] disabled:opacity-40"
+                className="text-sm px-4 py-2 rounded-full border border-[#D8E0D9] bg-white text-[#1A2E2A] disabled:opacity-40"
               >
                 Next
               </button>
@@ -298,9 +298,9 @@ export default function AdminUsersPage() {
 
       {tab === "requests" && (
         loadingRequests ? (
-          <p className="text-sm text-[#8A7F76]">Loading...</p>
+          <p className="text-sm text-[#6B7B76]">Loading...</p>
         ) : sellerRequests.length === 0 ? (
-          <p className="text-sm text-[#8A7F76]">No pending seller requests.</p>
+          <p className="text-sm text-[#6B7B76]">No pending seller requests.</p>
         ) : (
           <div className="flex flex-col gap-4 max-w-4xl">
             {sellerRequests.map((user) => (
@@ -309,9 +309,9 @@ export default function AdminUsersPage() {
                 className="bg-white rounded-xl p-5 flex items-center justify-between gap-4"
               >
                 <div className="flex-1">
-                  <p className="text-sm font-medium text-[#2B2420]">{user.username}</p>
-                  <p className="text-xs text-[#8A7F76]">{user.email}</p>
-                  <p className="text-xs text-[#8A7F76] mt-1">
+                  <p className="text-sm font-medium text-[#1A2E2A]">{user.username}</p>
+                  <p className="text-xs text-[#6B7B76]">{user.email}</p>
+                  <p className="text-xs text-[#6B7B76] mt-1">
                     Requested {new Date(user.createdAt).toLocaleDateString("en-US", {
                       day: "numeric",
                       month: "short",
@@ -322,7 +322,7 @@ export default function AdminUsersPage() {
                 <button
                   onClick={() => handleApproveSellerRequest(user._id)}
                   disabled={updatingId === user._id}
-                  className="text-xs bg-[#8C4A3A] text-white px-4 py-2 rounded-full hover:bg-[#7a3f31] transition-colors disabled:opacity-50"
+                  className="text-xs bg-[#4A6B5A] text-white px-4 py-2 rounded-full hover:bg-[#3a5548] transition-colors disabled:opacity-50"
                 >
                   Approve
                 </button>

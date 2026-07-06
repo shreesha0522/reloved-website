@@ -83,9 +83,9 @@ const firstItem = order.items[0];
   });
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] px-10 py-12">
-      <h1 className="font-display text-4xl text-[#2B2420] mb-2">Track Order</h1>
-      <p className="text-sm text-[#8A7F76] mb-10">
+    <div className="min-h-screen bg-[#F4F6F2] px-10 py-12">
+      <h1 className="font-display text-4xl text-[#1A2E2A] mb-2">Track Order</h1>
+      <p className="text-sm text-[#6B7B76] mb-10">
         Order #{order.orderNumber} • Placed on {orderDate}
       </p>
 
@@ -102,35 +102,35 @@ const firstItem = order.items[0];
                   📦
                 </span>
                 <div>
-                  <p className="text-xs uppercase tracking-wider text-[#8C4A3A] font-medium">
+                  <p className="text-xs uppercase tracking-wider text-[#4A6B5A] font-medium">
                     Current Status
                   </p>
-                 <p className="font-display text-xl text-[#2B2420]">
+                 <p className="font-display text-xl text-[#1A2E2A]">
   {trackingSteps.find((s) => s.highlight)?.title || "Processing"}
 </p>
                 </div>
               </div>
-              <span className="bg-[#F0E9E2] text-xs text-[#6b5c52] px-3 py-2 rounded-lg text-right">
+              <span className="bg-[#E3E9E1] text-xs text-[#4a5a55] px-3 py-2 rounded-lg text-right">
                 Expected Delivery<br />
-                <span className="font-medium text-[#2B2420]">15 May – 16 May</span>
+                <span className="font-medium text-[#1A2E2A]">15 May – 16 May</span>
               </span>
             </div>
 
-            <div className="h-px bg-[#E7DDD4] mb-6" />
+            <div className="h-px bg-[#D8E0D9] mb-6" />
 
             <div className="grid grid-cols-2 gap-6 text-sm">
               <div>
-                <p className="flex items-center gap-1.5 text-[#2B2420] font-medium mb-1.5">
+                <p className="flex items-center gap-1.5 text-[#1A2E2A] font-medium mb-1.5">
                   📍 Delivery Address
                 </p>
-                <p className="text-[#6b5c52]">{order.shippingAddress?.name}</p>
-                <p className="text-[#6b5c52]">{order.shippingAddress?.address}</p>
+                <p className="text-[#4a5a55]">{order.shippingAddress?.name}</p>
+                <p className="text-[#4a5a55]">{order.shippingAddress?.address}</p>
               </div>
               <div>
-                <p className="flex items-center gap-1.5 text-[#2B2420] font-medium mb-1.5">
+                <p className="flex items-center gap-1.5 text-[#1A2E2A] font-medium mb-1.5">
                   🚚 Shipping Method
                 </p>
-                <p className="text-[#6b5c52]">
+                <p className="text-[#4a5a55]">
                   {order.deliveryOption === "standard" ? "NP-DEX: Standard Delivery" : "Local Pickup"}
                 </p>
               </div>
@@ -139,10 +139,10 @@ const firstItem = order.items[0];
 
           {/* Journey timeline */}
           <div className="bg-white/60 rounded-xl p-6">
-            <h2 className="font-display text-xl text-[#2B2420] mb-6">Journey of Your Parcel</h2>
+            <h2 className="font-display text-xl text-[#1A2E2A] mb-6">Journey of Your Parcel</h2>
 
             <div className="relative pl-6">
-              <div className="absolute left-[7px] top-1 bottom-1 w-px bg-[#E7DDD4]" />
+              <div className="absolute left-[7px] top-1 bottom-1 w-px bg-[#D8E0D9]" />
 
               <div className="flex flex-col gap-7">
                 {[...trackingSteps].reverse().map((step) => (
@@ -150,26 +150,26 @@ const firstItem = order.items[0];
                     <span
                       className={`absolute -left-6 top-0.5 w-3.5 h-3.5 rounded-full border-2 ${
                         step.done
-                          ? "bg-[#8C4A3A] border-[#8C4A3A]"
-                          : "bg-white border-[#E7DDD4]"
+                          ? "bg-[#4A6B5A] border-[#4A6B5A]"
+                          : "bg-white border-[#D8E0D9]"
                       }`}
                     />
                     {step.highlight ? (
-                      <div className="bg-[#F0E9E2] rounded-lg p-4">
-                        <p className="text-sm font-medium text-[#8C4A3A] mb-1">{step.title}</p>
-                        <p className="text-sm text-[#2B2420] mb-1">{step.description}</p>
-                        <p className="text-xs text-[#8A7F76]">Today, 10:45 AM</p>
+                      <div className="bg-[#E3E9E1] rounded-lg p-4">
+                        <p className="text-sm font-medium text-[#4A6B5A] mb-1">{step.title}</p>
+                        <p className="text-sm text-[#1A2E2A] mb-1">{step.description}</p>
+                        <p className="text-xs text-[#6B7B76]">Today, 10:45 AM</p>
                       </div>
                     ) : (
                       <div>
-                        <p className={`text-sm font-medium ${step.done ? "text-[#2B2420]" : "text-[#8A7F76]"}`}>
+                        <p className={`text-sm font-medium ${step.done ? "text-[#1A2E2A]" : "text-[#6B7B76]"}`}>
                           {step.title}
                         </p>
-                        <p className={`text-sm ${step.done ? "text-[#6b5c52]" : "text-[#8A7F76]"}`}>
+                        <p className={`text-sm ${step.done ? "text-[#4a5a55]" : "text-[#6B7B76]"}`}>
                           {step.description}
                         </p>
                         {step.key === "confirmed" && (
-                          <p className="text-xs text-[#8A7F76] mt-1">{orderDate}</p>
+                          <p className="text-xs text-[#6B7B76] mt-1">{orderDate}</p>
                         )}
                       </div>
                     )}
@@ -182,7 +182,7 @@ const firstItem = order.items[0];
 
         {/* Right column — Order Summary */}
         <div className="w-full md:w-80 bg-white/60 rounded-xl p-6 h-fit">
-          <h2 className="font-display text-xl text-[#2B2420] mb-5">Order Summary</h2>
+          <h2 className="font-display text-xl text-[#1A2E2A] mb-5">Order Summary</h2>
 
           <div className="flex gap-3 items-center mb-5">
             <img
@@ -191,31 +191,31 @@ const firstItem = order.items[0];
               className="w-16 h-16 rounded-lg object-cover"
             />
             <div>
-              <p className="text-sm font-medium text-[#2B2420]">{firstItem.name}</p>
-              <p className="text-xs text-[#8A7F76]">Qty: {firstItem.qty}</p>
-              <p className="text-sm text-[#8C4A3A] font-medium">Rs {firstItem.price}</p>
+              <p className="text-sm font-medium text-[#1A2E2A]">{firstItem.name}</p>
+              <p className="text-xs text-[#6B7B76]">Qty: {firstItem.qty}</p>
+              <p className="text-sm text-[#4A6B5A] font-medium">Rs {firstItem.price}</p>
             </div>
           </div>
 
-          <div className="h-px bg-[#E7DDD4] my-3" />
+          <div className="h-px bg-[#D8E0D9] my-3" />
 
           <div className="flex justify-between text-sm mb-2">
-            <span className="text-[#2B2420]">Subtotal</span>
-            <span className="text-[#2B2420]">Rs {order.itemTotal}</span>
+            <span className="text-[#1A2E2A]">Subtotal</span>
+            <span className="text-[#1A2E2A]">Rs {order.itemTotal}</span>
           </div>
           <div className="flex justify-between text-sm mb-4">
-            <span className="text-[#2B2420]">Shipping</span>
-            <span className="text-[#2B2420]">Rs {order.deliveryFee}</span>
+            <span className="text-[#1A2E2A]">Shipping</span>
+            <span className="text-[#1A2E2A]">Rs {order.deliveryFee}</span>
           </div>
 
-          <div className="h-px bg-[#E7DDD4] my-3" />
+          <div className="h-px bg-[#D8E0D9] my-3" />
 
           <div className="flex justify-between text-base font-medium mb-5">
-            <span className="text-[#2B2420]">Total</span>
-            <span className="text-[#8C4A3A]">Rs {order.total}</span>
+            <span className="text-[#1A2E2A]">Total</span>
+            <span className="text-[#4A6B5A]">Rs {order.total}</span>
           </div>
 
-          <button className="w-full bg-[#8C4A3A] hover:bg-[#7a3f31] text-white font-medium py-3 rounded-lg transition-colors text-sm tracking-wide">
+          <button className="w-full bg-[#4A6B5A] hover:bg-[#3a5548] text-white font-medium py-3 rounded-lg transition-colors text-sm tracking-wide">
             Contact Support
           </button>
         </div>

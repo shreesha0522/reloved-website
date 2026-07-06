@@ -6,22 +6,22 @@ import { getAllProducts, Product } from "@/lib/products";
 import { addToCart } from "@/lib/cart";
 
 const categoryTitles: Record<string, string> = {
-  "jewelry":    "Jewelry Collection",
-  "home-decor": "Home Decor",
+  "clothing":   "Clothing",
+  "furniture":  "Furniture",
+  "books":      "Books",
   "accessories":"Accessories",
-  "candles":    "Candles",
-  "crochet":    "Crochet",
+  "home-goods": "Home Goods",
 };
 const categoryFilters: Record<string, string[]> = {
-  "jewelry":    ["All Items", "Necklaces", "Rings", "Earrings"],
-  "home-decor": ["All Items", "Vases", "Pots", "Lighting"],
+  "clothing":   ["All Items", "Tops", "Bottoms", "Dresses", "Outerwear"],
+  "furniture":  ["All Items", "Chairs", "Tables", "Storage"],
+  "books":      ["All Items", "Fiction", "Non-Fiction", "Children's"],
   "accessories":["All Items", "Bags", "Scarves"],
-  "candles":    ["All Items", "Scented", "Unscented"],
-  "crochet":    ["All Items"],
+  "home-goods": ["All Items", "Kitchenware", "Decor", "Textiles"],
 };
 function Stars({ count }: { count: number }) {
   return (
-    <span className="text-xs text-[#d6a157]">
+    <span className="text-xs text-[#b8935a]">
       {"★".repeat(Math.round(count))}
       {"☆".repeat(5 - Math.round(count))}
     </span>
@@ -62,11 +62,11 @@ async function handleAddToCart(e: React.MouseEvent, product: Product) {
 }
 
   return (
-    <section className="bg-[#FAF3EC] min-h-screen">
+    <section className="bg-[#E8EDE6] min-h-screen">
       {/* Header */}
-      <div className="px-4 md:px-16 py-8 md:py-12 text-center border-b border-[#E7DDD4]">
-        <h1 className="font-display text-3xl md:text-4xl text-[#2B2420] mb-2">{title}</h1>
-        <p className="text-sm text-[#8A7F76]">Handcrafted with love, made to last.</p>
+      <div className="px-4 md:px-16 py-8 md:py-12 text-center border-b border-[#D8E0D9]">
+        <h1 className="font-display text-3xl md:text-4xl text-[#1A2E2A] mb-2">{title}</h1>
+        <p className="text-sm text-[#6B7B76]">Pre-loved pieces, ready for their next chapter.</p>
       </div>
       <div className="px-4 md:px-16 py-8">
         {/* Filters */}
@@ -78,16 +78,16 @@ async function handleAddToCart(e: React.MouseEvent, product: Product) {
                 onClick={() => setActiveFilter(f)}
                 className={`text-xs md:text-sm rounded-full px-4 py-1.5 border transition-colors ${
                   activeFilter === f
-                    ? "bg-[#8C4A3A] text-white border-[#8C4A3A]"
-                    : "bg-white text-[#2B2420] border-[#E7DDD4] hover:border-[#8C4A3A]"
+                    ? "bg-[#4A6B5A] text-white border-[#4A6B5A]"
+                    : "bg-white text-[#1A2E2A] border-[#D8E0D9] hover:border-[#4A6B5A]"
                 }`}
               >
                 {f}
               </button>
             ))}
           </div>
-          <div className="text-xs md:text-sm text-[#8A7F76]">
-            Sort by: <span className="text-[#2B2420] font-medium">Newest First</span>
+          <div className="text-xs md:text-sm text-[#6B7B76]">
+            Sort by: <span className="text-[#1A2E2A] font-medium">Newest First</span>
           </div>
         </div>
         {/* Loading skeletons */}
@@ -108,8 +108,8 @@ async function handleAddToCart(e: React.MouseEvent, product: Product) {
         {/* No products */}
         {!loading && filtered.length === 0 && (
           <div className="py-20 text-center">
-            <p className="text-[#8A7F76] text-lg mb-2">No products found.</p>
-            <p className="text-[#8A7F76] text-sm">
+            <p className="text-[#6B7B76] text-lg mb-2">No products found.</p>
+            <p className="text-[#6B7B76] text-sm">
               {products.length === 0
                 ? "No products in this category yet."
                 : "No products match this filter."}
@@ -136,16 +136,23 @@ async function handleAddToCart(e: React.MouseEvent, product: Product) {
                     }}
                   />
                 </div>
-                <div className="p-3">
-                  <h4 className="text-sm md:text-base font-medium mb-1 text-[#2B2420] leading-tight">
-                    {product.name}
-                  </h4>
-                  <div className="flex items-center gap-1 mb-2">
-                    <Stars count={product.rating} />
-                    <span className="text-[#8A7F76] text-xs">({product.reviews})</span>
-                  </div>
+               <div className="p-3">
+  <h4 className="text-sm md:text-base font-medium mb-1 text-[#1A2E2A] leading-tight">
+    {product.name}
+  </h4>
+  <div className="flex items-center gap-2 mb-2 flex-wrap">
+    <div className="flex items-center gap-1">
+      <Stars count={product.rating} />
+      <span className="text-[#6B7B76] text-xs">({product.reviews})</span>
+    </div>
+    {product.condition && (
+      <span className="text-[10px] font-medium text-[#4A6B5A] bg-[#E8EDE6] px-2 py-0.5 rounded-full">
+        {product.condition}
+      </span>
+    )}
+  </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-[#8C4A3A] font-semibold text-sm">
+                    <span className="text-[#4A6B5A] font-semibold text-sm">
                       Rs {product.price.toLocaleString()}
                     </span>
                     <button
@@ -153,8 +160,8 @@ async function handleAddToCart(e: React.MouseEvent, product: Product) {
                       title={justAdded === product._id ? "Added to cart" : "Add to cart"}
                       className={`w-8 h-8 flex items-center justify-center rounded-full border transition-all duration-200 ${
                         justAdded === product._id
-                          ? "bg-[#8C4A3A] border-[#8C4A3A] text-white"
-                          : "bg-white border-[#E7DDD4] text-[#8C4A3A] hover:border-[#8C4A3A] hover:bg-[#F6E9E5]"
+                          ? "bg-[#4A6B5A] border-[#4A6B5A] text-white"
+                          : "bg-white border-[#D8E0D9] text-[#4A6B5A] hover:border-[#4A6B5A] hover:bg-[#E8EDE6]"
                       }`}
                     >
                       {justAdded === product._id ? (

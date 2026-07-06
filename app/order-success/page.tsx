@@ -37,16 +37,16 @@ export default function OrderSuccessPage() {
   const extraCount = order.items.length - 1;
 
   return (
-    <div className="min-h-screen bg-[#FAF8F5] px-6 py-16 flex justify-center">
+    <div className="min-h-screen bg-[#F4F6F2] px-6 py-16 flex justify-center">
       <div className="w-full max-w-2xl">
 
         <div className="bg-[#fbeae3] rounded-2xl px-8 py-12 flex flex-col items-center text-center">
 
-          <div className="w-16 h-16 rounded-full bg-[#fbeae3] border-2 border-[#8C4A3A] flex items-center justify-center mb-6">
-            <span className="text-[#8C4A3A] text-2xl">✓</span>
+          <div className="w-16 h-16 rounded-full bg-[#fbeae3] border-2 border-[#4A6B5A] flex items-center justify-center mb-6">
+            <span className="text-[#4A6B5A] text-2xl">✓</span>
           </div>
 
-          <h1 className="font-display text-3xl md:text-4xl text-[#2B2420] leading-tight mb-8">
+          <h1 className="font-display text-3xl md:text-4xl text-[#1A2E2A] leading-tight mb-8">
             YOUR ORDER IS<br />CONFIRMED
           </h1>
 
@@ -59,18 +59,18 @@ export default function OrderSuccessPage() {
 
             <div className="flex-1 grid grid-cols-2 gap-4">
               <div>
-                <p className="text-[10px] tracking-wider text-[#8A7F76] uppercase mb-1">Product</p>
-                <p className="font-display text-lg text-[#8C4A3A]">
+                <p className="text-[10px] tracking-wider text-[#6B7B76] uppercase mb-1">Product</p>
+                <p className="font-display text-lg text-[#4A6B5A]">
                   {firstItem.name}{extraCount > 0 ? ` +${extraCount} more` : ""}
                 </p>
               </div>
               <div>
-                <p className="text-[10px] tracking-wider text-[#8A7F76] uppercase mb-1">Order Total</p>
-                <p className="font-display text-lg text-[#2B2420]">Rs {order.total}</p>
+                <p className="text-[10px] tracking-wider text-[#6B7B76] uppercase mb-1">Order Total</p>
+                <p className="font-display text-lg text-[#1A2E2A]">Rs {order.total}</p>
               </div>
               <div>
-                <p className="text-[10px] tracking-wider text-[#8A7F76] uppercase mb-1">Order Date</p>
-                <p className="text-sm text-[#2B2420]">
+                <p className="text-[10px] tracking-wider text-[#6B7B76] uppercase mb-1">Order Date</p>
+                <p className="text-sm text-[#1A2E2A]">
                   {new Date(order.createdAt).toLocaleDateString("en-US", {
                     day: "numeric",
                     month: "short",
@@ -78,15 +78,15 @@ export default function OrderSuccessPage() {
                 </p>
               </div>
               <div>
-                <p className="text-[10px] tracking-wider text-[#8A7F76] uppercase mb-1">Order Number</p>
-                <p className="text-sm text-[#2B2420]">{order.orderNumber}</p>
+                <p className="text-[10px] tracking-wider text-[#6B7B76] uppercase mb-1">Order Number</p>
+                <p className="text-sm text-[#1A2E2A]">{order.orderNumber}</p>
               </div>
             </div>
           </div>
 
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="mt-6 bg-[#8C4A3A] hover:bg-[#7a3f31] text-white text-sm font-medium px-8 py-3 rounded-full transition-colors"
+            className="mt-6 bg-[#4A6B5A] hover:bg-[#3a5548] text-white text-sm font-medium px-8 py-3 rounded-full transition-colors"
           >
             {showDetails ? "Hide details" : "Show details"}
           </button>
@@ -101,10 +101,10 @@ export default function OrderSuccessPage() {
                     className="w-14 h-14 rounded-lg object-cover"
                   />
                   <div className="flex-1">
-                    <p className="text-sm font-medium text-[#2B2420]">{item.name}</p>
-                    <p className="text-xs text-[#8A7F76]">Qty: {item.qty}</p>
+                    <p className="text-sm font-medium text-[#1A2E2A]">{item.name}</p>
+                    <p className="text-xs text-[#6B7B76]">Qty: {item.qty}</p>
                   </div>
-                  <span className="text-sm text-[#8C4A3A] font-medium">Rs {item.price * item.qty}</span>
+                  <span className="text-sm text-[#4A6B5A] font-medium">Rs {item.price * item.qty}</span>
                 </div>
               ))}
             </div>
@@ -115,18 +115,18 @@ export default function OrderSuccessPage() {
         <div className="grid grid-cols-3 gap-4 mt-6">
           <button
             onClick={() => router.push(`/track-order?orderId=${order._id}`)}
-            className="bg-[#F0E9E2] hover:bg-[#e8ddd2] rounded-xl py-5 flex flex-col items-center gap-2 transition-colors"
+            className="bg-[#E3E9E1] hover:bg-[#d5ded6] rounded-xl py-5 flex flex-col items-center gap-2 transition-colors"
           >
             <span className="text-xl">🚚</span>
-            <span className="text-sm font-medium text-[#2B2420]">Track Delivery</span>
+            <span className="text-sm font-medium text-[#1A2E2A]">Track Delivery</span>
           </button>
-          <button className="bg-[#F0E9E2] hover:bg-[#e8ddd2] rounded-xl py-5 flex flex-col items-center gap-2 transition-colors">
+          <button className="bg-[#E3E9E1] hover:bg-[#d5ded6] rounded-xl py-5 flex flex-col items-center gap-2 transition-colors">
             <span className="text-xl">🎧</span>
-            <span className="text-sm font-medium text-[#2B2420]">Need Help?</span>
+            <span className="text-sm font-medium text-[#1A2E2A]">Need Help?</span>
           </button>
-          <button className="bg-[#F0E9E2] hover:bg-[#e8ddd2] rounded-xl py-5 flex flex-col items-center gap-2 transition-colors">
+          <button className="bg-[#E3E9E1] hover:bg-[#d5ded6] rounded-xl py-5 flex flex-col items-center gap-2 transition-colors">
             <span className="text-xl">📄</span>
-            <span className="text-sm font-medium text-[#2B2420]">Download Invoice</span>
+            <span className="text-sm font-medium text-[#1A2E2A]">Download Invoice</span>
           </button>
         </div>
       </div>
