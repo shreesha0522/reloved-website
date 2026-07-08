@@ -21,7 +21,7 @@ export default function BlogPage() {
     <div className="min-h-screen bg-[#F4F6F2] px-6 md:px-16 py-12">
       <div className="text-center mb-12">
         <h1 className="font-display text-4xl text-[#1A2E2A] mb-2">Our Journal</h1>
-        <p className="text-sm text-[#6B7B76]">Stories from the studio, craft notes, and behind-the-scenes.</p>
+<p className="text-sm text-[#6B7B76]">Stories from our sellers, styling ideas, and life after the first owner.</p>
       </div>
 
       {loading ? (
