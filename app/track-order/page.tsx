@@ -1,6 +1,6 @@
 // app/track-order/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getOrderById, Order } from "@/lib/orders";
 
@@ -46,7 +46,7 @@ function buildTrackingSteps(status: string) {
   }));
 }
 
-export default function TrackOrderPage() {
+function TrackOrderContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
@@ -221,5 +221,13 @@ const firstItem = order.items[0];
         </div>
       </div>
     </div>
+  );
+}
+
+export default function TrackOrderPage() {
+  return (
+    <Suspense fallback={null}>
+      <TrackOrderContent />
+    </Suspense>
   );
 }
