@@ -17,7 +17,7 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Handmade Boutique",
+  title: "ReLoved",
   description: "Thoughtfully designed, expertly crafted artisanal products.",
 };
 

@@ -1,11 +1,11 @@
 // app/search/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getAllProducts, Product } from "@/lib/products";
 import { addToCart } from "@/lib/cart";
 
-export default function SearchResultsPage() {
+function SearchResultsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const query = searchParams.get("q") || "";
@@ -96,5 +96,13 @@ export default function SearchResultsPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function SearchResultsPage() {
+  return (
+    <Suspense fallback={null}>
+      <SearchResultsContent />
+    </Suspense>
   );
 }
