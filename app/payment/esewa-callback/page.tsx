@@ -1,10 +1,10 @@
 // app/payment/esewa-callback/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { verifyEsewaPayment } from "@/lib/esewa";
 
-export default function EsewaCallbackPage() {
+function EsewaCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<"verifying" | "error">("verifying");
@@ -46,5 +46,13 @@ export default function EsewaCallbackPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function EsewaCallbackPage() {
+  return (
+    <Suspense fallback={null}>
+      <EsewaCallbackContent />
+    </Suspense>
   );
 }
