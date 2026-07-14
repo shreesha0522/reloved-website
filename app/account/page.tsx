@@ -1,4 +1,3 @@
-// app/account/page.tsx
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
@@ -12,6 +11,9 @@ export default function AccountPage() {
 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [street, setStreet] = useState("");
+  const [city, setCity] = useState("");
+  const [phone, setPhone] = useState("");
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -35,6 +37,9 @@ export default function AccountPage() {
       setProfile(data);
       setUsername(data.username);
       setEmail(data.email);
+      setStreet(data.address?.street || "");
+      setCity(data.address?.city || "");
+      setPhone(data.address?.phone || "");
       setLoading(false);
     }
     load();
@@ -51,7 +56,11 @@ export default function AccountPage() {
 
     setSaving(true);
 
-    const payload: any = { username, email };
+    const payload: any = {
+      username,
+      email,
+      address: { street, city, phone },
+    };
     if (newPassword) {
       payload.currentPassword = currentPassword;
       payload.newPassword = newPassword;
@@ -131,6 +140,44 @@ export default function AccountPage() {
               required
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
+          </div>
+
+          <div className="h-px bg-[#D8E0D9] my-1" />
+
+          <p className="text-sm text-[#6B7B76]">Delivery Address</p>
+
+          <div>
+            <label className="block text-sm text-[#1A2E2A] mb-1.5">Street Address</label>
+            <input
+              type="text"
+              value={street}
+              onChange={(e) => setStreet(e.target.value)}
+              placeholder="e.g. Dillibazar, Ward 10"
+              className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm text-[#1A2E2A] mb-1.5">City</label>
+              <input
+                type="text"
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="e.g. Kathmandu"
+                className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
+              />
+            </div>
+            <div>
+              <label className="block text-sm text-[#1A2E2A] mb-1.5">Phone</label>
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="e.g. 9800000000"
+                className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
+              />
+            </div>
           </div>
 
           <div className="h-px bg-[#D8E0D9] my-1" />

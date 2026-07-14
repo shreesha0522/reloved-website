@@ -155,6 +155,7 @@ async function handleDeleteReview(reviewId: string) {
 }
 
   const rating = Math.round(product.rating || 0);
+  const maxQty = Math.max(product.stock, 0);
 
   return (
     <section className="bg-[#E8EDE6] min-h-screen px-4 md:px-16 py-8 md:py-10">
@@ -188,6 +189,11 @@ async function handleDeleteReview(reviewId: string) {
       Condition: {product.condition}
     </span>
   )}
+  {product.size && product.size !== "N/A" && (
+    <span className="text-xs font-medium text-[#4A6B5A] bg-[#E8EDE6] px-3 py-1 rounded-full">
+      Size: {product.size}
+    </span>
+  )}
 </div>
           <div className="flex items-baseline gap-2 mb-1">
             <span className="text-3xl text-[#4A6B5A] font-semibold">Rs {product.price}</span>
@@ -201,20 +207,28 @@ async function handleDeleteReview(reviewId: string) {
             <p className="text-sm text-[#4a5a55] mb-6 leading-relaxed">{product.description}</p>
           )}
 
-          <div className="grid grid-cols-2 gap-4 mb-6">
-            <div>
-              <label className="block text-sm text-[#1A2E2A] mb-1.5">Quantity</label>
-              <select
-                value={quantity}
-                onChange={(e) => setQuantity(Number(e.target.value))}
-                className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white"
-              >
-                {[1, 2, 3, 4, 5].map((n) => (
-                  <option key={n} value={n}>{n}</option>
-                ))}
-              </select>
+          {maxQty > 1 && (
+            <div className="grid grid-cols-2 gap-4 mb-6">
+              <div>
+                <label className="block text-sm text-[#1A2E2A] mb-1.5">Quantity</label>
+                <select
+                  value={quantity}
+                  onChange={(e) => setQuantity(Number(e.target.value))}
+                  className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white"
+                >
+                  {Array.from({ length: maxQty }, (_, i) => i + 1).map((n) => (
+                    <option key={n} value={n}>{n}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-          </div>
+          )}
+
+          {maxQty === 1 && (
+            <p className="text-xs text-[#6B7B76] mb-6">
+              This is a one-of-a-kind item — only 1 available.
+            </p>
+          )}
 
           <button
             onClick={handleAddToCart}

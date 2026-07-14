@@ -1,4 +1,3 @@
-// lib/products.ts
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export interface Product {
@@ -10,6 +9,7 @@ export interface Product {
   image: string;
   description?: string;
   stock: number;
+  size?: string;
   condition?: "Like New" | "Good" | "Fair";
   rating: number;
   reviews: number;
@@ -71,6 +71,7 @@ export async function createProduct(payload: {
   image: string;
   description?: string;
   stock?: number;
+  size?: string;
   condition?: string;
 }): Promise<{ success: boolean; product?: Product; message?: string }> {
   const token = getToken();
@@ -100,6 +101,7 @@ export async function updateProduct(
     image: string;
     description?: string;
     stock?: number;
+    size?: string;
     condition?: string;
   }
 ): Promise<{ success: boolean; product?: Product; message?: string }> {

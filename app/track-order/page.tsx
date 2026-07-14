@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getOrderById, Order } from "@/lib/orders";
+import { Package, MapPin, Truck, Headphones, X, Mail, Phone, MessageCircle } from "lucide-react";
 
 const stepOrder = ["confirmed", "packed", "ready", "transit", "out", "delivered"];
 
@@ -15,8 +16,6 @@ const stepMeta: Record<string, { title: string; description: string }> = {
   delivered:  { title: "Delivered",          description: "Package delivered" },
 };
 
-// Maps whatever your order.status values are to a step key.
-// Adjust the left-hand strings below to match the real status values from your backend.
 function statusToStepKey(status: string): string {
   switch (status) {
     case "confirmed":
@@ -46,6 +45,19 @@ function buildTrackingSteps(status: string) {
   }));
 }
 
+function getExpectedDeliveryRange(createdAt: string): string {
+  const date = new Date(createdAt);
+  const minDays = 7;
+  const maxDays = 14;
+  const minDate = new Date(date);
+  const maxDate = new Date(date);
+  minDate.setDate(minDate.getDate() + minDays);
+  maxDate.setDate(maxDate.getDate() + maxDays);
+  
+  const format = (d: Date) => d.toLocaleDateString("en-US", { day: "numeric", month: "short" });
+  return `${format(minDate)} - ${format(maxDate)}`;
+}
+
 export default function TrackOrderPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -53,6 +65,7 @@ export default function TrackOrderPage() {
 
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
+  const [supportOpen, setSupportOpen] = useState(false);
 
   useEffect(() => {
     if (!orderId) {
@@ -72,15 +85,15 @@ export default function TrackOrderPage() {
     load();
   }, [orderId, router]);
 
-if (loading || !order) return null;
+  if (loading || !order) return null;
 
-
-const trackingSteps = buildTrackingSteps(order.orderStatus);
-const firstItem = order.items[0];
+  const trackingSteps = buildTrackingSteps(order.orderStatus);
+  const firstItem = order.items[0];
   const orderDate = new Date(order.createdAt).toLocaleDateString("en-US", {
     day: "numeric",
     month: "short",
   });
+  const expectedDelivery = getExpectedDeliveryRange(order.createdAt);
 
   return (
     <div className="min-h-screen bg-[#F4F6F2] px-10 py-12">
@@ -96,39 +109,41 @@ const firstItem = order.items[0];
 
           {/* Current status card */}
           <div className="bg-white/60 rounded-xl p-6">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-6 flex-wrap gap-4">
               <div className="flex items-center gap-3">
-                <span className="w-10 h-10 rounded-full bg-[#f5e2d8] flex items-center justify-center text-lg">
-                  📦
+                <span className="w-10 h-10 rounded-full bg-[#E8EDE6] flex items-center justify-center">
+                  <Package size={18} strokeWidth={1.75} className="text-[#4A6B5A]" />
                 </span>
                 <div>
                   <p className="text-xs uppercase tracking-wider text-[#4A6B5A] font-medium">
                     Current Status
                   </p>
-                 <p className="font-display text-xl text-[#1A2E2A]">
-  {trackingSteps.find((s) => s.highlight)?.title || "Processing"}
-</p>
+                  <p className="font-display text-xl text-[#1A2E2A]">
+                    {trackingSteps.find((s) => s.highlight)?.title || "Processing"}
+                  </p>
                 </div>
               </div>
               <span className="bg-[#E3E9E1] text-xs text-[#4a5a55] px-3 py-2 rounded-lg text-right">
                 Expected Delivery<br />
-                <span className="font-medium text-[#1A2E2A]">15 May – 16 May</span>
+                <span className="font-medium text-[#1A2E2A]">{expectedDelivery}</span>
               </span>
             </div>
 
             <div className="h-px bg-[#D8E0D9] mb-6" />
 
-            <div className="grid grid-cols-2 gap-6 text-sm">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 text-sm">
               <div>
                 <p className="flex items-center gap-1.5 text-[#1A2E2A] font-medium mb-1.5">
-                  📍 Delivery Address
+                  <MapPin size={15} strokeWidth={1.75} className="text-[#4A6B5A]" />
+                  Delivery Address
                 </p>
                 <p className="text-[#4a5a55]">{order.shippingAddress?.name}</p>
                 <p className="text-[#4a5a55]">{order.shippingAddress?.address}</p>
               </div>
               <div>
                 <p className="flex items-center gap-1.5 text-[#1A2E2A] font-medium mb-1.5">
-                  🚚 Shipping Method
+                  <Truck size={15} strokeWidth={1.75} className="text-[#4A6B5A]" />
+                  Shipping Method
                 </p>
                 <p className="text-[#4a5a55]">
                   {order.deliveryOption === "standard" ? "NP-DEX: Standard Delivery" : "Local Pickup"}
@@ -215,11 +230,80 @@ const firstItem = order.items[0];
             <span className="text-[#4A6B5A]">Rs {order.total}</span>
           </div>
 
-          <button className="w-full bg-[#4A6B5A] hover:bg-[#3a5548] text-white font-medium py-3 rounded-lg transition-colors text-sm tracking-wide">
+          <button
+            onClick={() => setSupportOpen(true)}
+            className="w-full flex items-center justify-center gap-2 bg-[#4A6B5A] hover:bg-[#3a5548] text-white font-medium py-3 rounded-lg transition-colors text-sm tracking-wide"
+          >
+            <Headphones size={16} strokeWidth={1.75} />
             Contact Support
           </button>
         </div>
       </div>
+
+      {/* Support modal */}
+      {supportOpen && (
+        <div
+          className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 px-4"
+          onClick={() => setSupportOpen(false)}
+        >
+          <div
+            className="bg-white rounded-xl shadow-lg max-w-sm w-full p-6 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setSupportOpen(false)}
+              className="absolute top-4 right-4 text-[#6B7B76] hover:text-[#1A2E2A]"
+            >
+              <X size={18} strokeWidth={1.75} />
+            </button>
+
+            <h3 className="font-display text-xl text-[#1A2E2A] mb-1">Need help with your order?</h3>
+            <p className="text-sm text-[#6B7B76] mb-6">
+              Order #{order.orderNumber} — reach out to us any way that's convenient.
+            </p>
+
+            <div className="flex flex-col gap-3">
+              
+              <a
+                href={`mailto:support@reloved.com?subject=Support for order ${order.orderNumber}`}
+                className="flex items-center gap-3 border border-[#D8E0D9] hover:border-[#4A6B5A] hover:bg-[#E8EDE6] rounded-lg px-4 py-3 transition-colors"
+              >
+                <Mail size={18} strokeWidth={1.75} className="text-[#4A6B5A]" />
+                <div>
+                  <p className="text-sm font-medium text-[#1A2E2A]">Email us</p>
+                  <p className="text-xs text-[#6B7B76]">support@reloved.com</p>
+                </div>
+              </a>
+
+              
+              <a
+                href="tel:+9779800000000"
+                className="flex items-center gap-3 border border-[#D8E0D9] hover:border-[#4A6B5A] hover:bg-[#E8EDE6] rounded-lg px-4 py-3 transition-colors"
+              >
+                <Phone size={18} strokeWidth={1.75} className="text-[#4A6B5A]" />
+                <div>
+                  <p className="text-sm font-medium text-[#1A2E2A]">Call us</p>
+                  <p className="text-xs text-[#6B7B76]">+977 980-0000000</p>
+                </div>
+              </a>
+
+              
+              <a
+                href="https://wa.me/9779800000000"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-3 border border-[#D8E0D9] hover:border-[#4A6B5A] hover:bg-[#E8EDE6] rounded-lg px-4 py-3 transition-colors"
+              >
+                <MessageCircle size={18} strokeWidth={1.75} className="text-[#4A6B5A]" />
+                <div>
+                  <p className="text-sm font-medium text-[#1A2E2A]">WhatsApp</p>
+                  <p className="text-xs text-[#6B7B76]">Chat with our support team</p>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

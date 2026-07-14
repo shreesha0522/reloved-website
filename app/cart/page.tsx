@@ -24,13 +24,13 @@ export default function CartPage() {
   }
 
   async function handleUpdateQty(id: string, qty: number) {
-  if (qty < 1) return;
-  const result = await updateQty(id, qty);
-  if (!result.success) {
-    alert(result.message || "Could not update quantity.");
+    if (qty < 1) return;
+    const result = await updateQty(id, qty);
+    if (!result.success) {
+      alert(result.message || "Could not update quantity.");
+    }
+    await refresh();
   }
-  await refresh();
-}
 
   async function handleRemove(id: string) {
     await removeFromCart(id);
@@ -115,7 +115,9 @@ export default function CartPage() {
                 <span className="text-sm w-6 text-center">{item.qty}</span>
                 <button
                   onClick={() => handleUpdateQty(item.id, item.qty + 1)}
-                  className="w-7 h-7 border border-[#D8E0D9] rounded text-sm flex-shrink-0"
+                  disabled={item.qty >= 1}
+                  title="Only 1 available — this is a one-of-a-kind thrift item"
+                  className="w-7 h-7 border border-[#D8E0D9] rounded text-sm flex-shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   +
                 </button>
@@ -134,7 +136,9 @@ export default function CartPage() {
                 <span className="text-sm w-6 text-center">{item.qty}</span>
                 <button
                   onClick={() => handleUpdateQty(item.id, item.qty + 1)}
-                  className="w-7 h-7 border border-[#D8E0D9] rounded text-sm"
+                  disabled={item.qty >= 1}
+                  title="Only 1 available — this is a one-of-a-kind thrift item"
+                  className="w-7 h-7 border border-[#D8E0D9] rounded text-sm disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   +
                 </button>
