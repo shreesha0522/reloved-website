@@ -1,26 +1,23 @@
 // app/order-success/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { getOrderById, Order } from "@/lib/orders";
 import { Check, Truck, Headphones, FileText, Copy } from "lucide-react";
 
-export default function OrderSuccessPage() {
+function OrderSuccessContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
-
   const [order, setOrder] = useState<Order | null>(null);
   const [showDetails, setShowDetails] = useState(false);
   const [loading, setLoading] = useState(true);
   const [copied, setCopied] = useState(false);
-
   useEffect(() => {
     if (!orderId) {
       router.push("/");
       return;
     }
-
     async function load() {
       const data = await getOrderById(orderId!);
       if (!data) {
@@ -32,23 +29,18 @@ export default function OrderSuccessPage() {
     }
     load();
   }, [orderId, router]);
-
   if (loading || !order) return null;
-
   const firstItem = order.items[0];
   const extraCount = order.items.length - 1;
   const itemCount = order.items.reduce((sum, item) => sum + item.qty, 0);
-
   function handleCopyOrderNumber() {
     navigator.clipboard.writeText(order!.orderNumber);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
   }
-
   return (
     <div className="min-h-screen bg-[#F4F6F2] px-6 py-16 flex justify-center">
       <div className="w-full max-w-2xl">
-
         {/* Success header */}
         <div className="flex flex-col items-center text-center mb-8">
           <div className="w-16 h-16 rounded-full bg-white shadow-sm border border-[#D8E0D9] flex items-center justify-center mb-5">
@@ -56,7 +48,6 @@ export default function OrderSuccessPage() {
               <Check size={20} strokeWidth={3} className="text-white" />
             </div>
           </div>
-
           <p className="text-xs tracking-[0.15em] text-[#4A6B5A] uppercase font-medium mb-2">
             Order Confirmed
           </p>
@@ -67,10 +58,8 @@ export default function OrderSuccessPage() {
             We've received your order and we're getting it ready. You'll get a confirmation email shortly.
           </p>
         </div>
-
         {/* Order summary card */}
         <div className="bg-white rounded-2xl border border-[#D8E0D9] shadow-sm overflow-hidden">
-
           {/* Order meta strip */}
           <div className="flex items-center justify-between px-6 py-4 bg-[#E8EDE6] border-b border-[#D8E0D9]">
             <div className="flex items-center gap-2">
@@ -93,7 +82,6 @@ export default function OrderSuccessPage() {
               })}
             </span>
           </div>
-
           {/* Product preview */}
           <div className="flex items-center gap-5 px-6 py-6">
             <img
@@ -114,7 +102,6 @@ export default function OrderSuccessPage() {
               <p className="font-display text-xl text-[#4A6B5A]">Rs {order.total.toLocaleString()}</p>
             </div>
           </div>
-
           <div className="px-6 pb-6">
             <button
               onClick={() => setShowDetails(!showDetails)}
@@ -122,7 +109,6 @@ export default function OrderSuccessPage() {
             >
               {showDetails ? "Hide order details" : "View order details"}
             </button>
-
             {showDetails && (
               <div className="mt-4 flex flex-col gap-4 pt-4 border-t border-[#D8E0D9]">
                 {order.items.map((item) => (
@@ -145,12 +131,11 @@ export default function OrderSuccessPage() {
             )}
           </div>
         </div>
-
         {/* Action cards */}
         <div className="grid grid-cols-3 gap-3 mt-6">
           <button
             onClick={() => router.push(`/track-order?orderId=${order._id}`)}
-            className="bg-white hover:bg-[#E8EDE6] border border-[#D8E0D9] hover:border-[#4A6B5A] rounded-xl py-5 flex flex-col items-center gap-2 transition-colors"
+            className="bg-white hover:bg-[#E8EDE6] border border-[#D8E0D9] hover:border-[#4A6B5A] rounded-xl py-5 flex flex-colitems-center gap-2 transition-colors"
           >
             <Truck size={19} strokeWidth={1.75} className="text-[#4A6B5A]" />
             <span className="text-xs md:text-sm font-medium text-[#1A2E2A]">Track Delivery</span>
@@ -164,7 +149,6 @@ export default function OrderSuccessPage() {
             <span className="text-xs md:text-sm font-medium text-[#1A2E2A]">Download Invoice</span>
           </button>
         </div>
-
         {/* Continue shopping */}
         <div className="text-center mt-8">
           <button
@@ -176,5 +160,13 @@ export default function OrderSuccessPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function OrderSuccessPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F4F6F2]" />}>
+      <OrderSuccessContent />
+    </Suspense>
   );
 }

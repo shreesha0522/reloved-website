@@ -1,17 +1,16 @@
 // app/search/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { getAllProducts, Product } from "@/lib/products";
 import { addToCart } from "@/lib/cart";
 
-export default function SearchResultsPage() {
+function SearchResultsContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const query = searchParams.get("q") || "";
   const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-
   useEffect(() => {
     async function search() {
       setLoading(true);
@@ -28,7 +27,6 @@ export default function SearchResultsPage() {
       setLoading(false);
     }
   }, [query]);
-
  async function handleAddToCart(e: React.MouseEvent, productId: string) {
   e.stopPropagation();
   const result = await addToCart(productId, 1);
@@ -36,7 +34,6 @@ export default function SearchResultsPage() {
     alert(result.message || "Could not add to cart.");
   }
 }
-
   return (
     <div className="min-h-screen bg-[#F4F6F2] px-6 md:px-16 py-10">
       <h1 className="font-display text-3xl md:text-4xl text-[#1A2E2A] mb-2">
@@ -45,13 +42,11 @@ export default function SearchResultsPage() {
       <p className="text-sm text-[#6B7B76] mb-8">
         {loading ? "Searching..." : `${results.length} result${results.length !== 1 ? "s" : ""} found`}
       </p>
-
       {!loading && results.length === 0 && (
         <p className="text-sm text-[#6B7B76]">
           No products matched "{query}". Try a different search term.
         </p>
       )}
-
       <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
         {results.map((product) => (
           <div
@@ -96,5 +91,13 @@ export default function SearchResultsPage() {
         ))}
       </div>
     </div>
+  );
+}
+
+export default function SearchResultsPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F4F6F2]" />}>
+      <SearchResultsContent />
+    </Suspense>
   );
 }

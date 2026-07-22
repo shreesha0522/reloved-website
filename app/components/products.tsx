@@ -31,6 +31,23 @@ export default function Products() {
     fetchProducts();
   }, []);
 
+  // Derive the displayed list based on the active filter, without mutating the original products state
+  const displayProducts = (() => {
+    const sorted = [...products];
+    switch (activeFilter) {
+      case "New Arrivals":
+        return sorted.sort(
+          (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      case "Best Seller":
+        return sorted.sort((a, b) => b.reviews - a.reviews);
+      case "Top Rated":
+        return sorted.sort((a, b) => b.rating - a.rating);
+      default:
+        return sorted;
+    }
+  })();
+
   async function handleAddToCart(e: React.MouseEvent, productId: string) {
     e.preventDefault();
     e.stopPropagation();
@@ -86,16 +103,16 @@ export default function Products() {
         </div>
       )}
 
-      {!loading && products.length === 0 && (
+      {!loading && displayProducts.length === 0 && (
         <div className="py-16 text-center">
           <p className="text-[#6B7B76] text-lg mb-2">No products yet.</p>
           <p className="text-[#6B7B76] text-sm">Products added by sellers will appear here.</p>
         </div>
       )}
 
-      {!loading && products.length > 0 && (
+      {!loading && displayProducts.length > 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-left">
-          {products.map((product) => {
+          {displayProducts.map((product) => {
             const added = justAdded.has(product._id);
             return (
               <Link
@@ -161,7 +178,7 @@ export default function Products() {
         </div>
       )}
 
-      {!loading && products.length > 0 && (
+      {!loading && displayProducts.length > 0 && (
         <button className="mt-12 border border-[#4A6B5A] text-[#4A6B5A] hover:bg-[#4A6B5A] hover:text-white transition-colors text-sm px-8 py-3 rounded-lg">
           Load More
         </button>

@@ -18,8 +18,8 @@ const categories: Category[] = [
   { name: "Clothing", img: "clothing.png" },
   { name: "Furniture", img: "furniture.png" },
   { name: "Books", img: "books.png" },
-  { name: "Accessories", img: "accessories1.png" },
-  { name: "Home Goods", img: "homedecor.png" },
+  { name: "Accessories", img: "accessories.png" },
+  { name: "Home Goods", img: "home-goods.png" },
 ];
 
 function routeFor(name: string) {

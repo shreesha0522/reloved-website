@@ -1,6 +1,6 @@
 // app/payment/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { isLoggedIn } from "@/lib/auth";
 import { getOrderById, markOrderPaid, Order } from "@/lib/orders";
@@ -9,7 +9,7 @@ import { initiateEsewaPayment } from "@/lib/esewa";
 
 type PaymentMethod = "esewa" | "khalti" | "bank";
 
-export default function PaymentPage() {
+function PaymentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
@@ -226,5 +226,13 @@ async function handlePayment() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function PaymentPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F4F6F2]" />}>
+      <PaymentContent />
+    </Suspense>
   );
 }

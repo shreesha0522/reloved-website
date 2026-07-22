@@ -1,8 +1,9 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { getAllPosts, BlogPost } from "@/lib/blog";
-import { Clock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { getAllPosts, deletePost, BlogPost } from "@/lib/blog";
+import { Clock, Pencil, Trash2 } from "lucide-react";
 
 function readingTime(content: string) {
   const words = content.trim().split(/\s+/).length;
@@ -11,8 +12,15 @@ function readingTime(content: string) {
 }
 
 export default function BlogPage() {
+  const router = useRouter();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setIsAdmin(localStorage.getItem("userRole") === "admin");
+  }, []);
 
   useEffect(() => {
     async function load() {
@@ -22,6 +30,20 @@ export default function BlogPage() {
     }
     load();
   }, []);
+
+  async function handleDelete(e: React.MouseEvent, id: string) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (!confirm("Delete this blog post? This cannot be undone.")) return;
+    setDeletingId(id);
+    const result = await deletePost(id);
+    if (result.success) {
+      setPosts((prev) => prev.filter((p) => p._id !== id));
+    } else {
+      alert(result.message || "Could not delete post.");
+    }
+    setDeletingId(null);
+  }
 
   const [featured, ...rest] = posts;
 
@@ -35,6 +57,15 @@ export default function BlogPage() {
         <p className="text-sm md:text-base text-[#6B7B76]">
           Stories from our sellers, styling ideas, and life after the first owner.
         </p>
+
+        {isAdmin && (
+          <button
+            onClick={() => router.push("/blog/new")}
+            className="mt-6 inline-flex items-center gap-2 bg-[#4A6B5A] hover:bg-[#3a5548] text-white text-sm font-medium px-5 py-2.5 rounded-lg transition-colors"
+          >
+            New Post
+          </button>
+        )}
       </div>
 
       {loading && (
@@ -63,13 +94,35 @@ export default function BlogPage() {
 
       {!loading && posts.length > 0 && (
         <div className="max-w-6xl mx-auto">
-
-          {/* Featured post */}
           {featured && (
             <Link
               href={`/blog/${featured.slug}`}
-              className="group block bg-white rounded-2xl overflow-hidden mb-10 md:grid md:grid-cols-2 hover:shadow-md transition-shadow"
+              className="group block bg-white rounded-2xl overflow-hidden mb-10 md:grid md:grid-cols-2 hover:shadow-md transition-shadow relative"
             >
+              {isAdmin && (
+                <div className="absolute top-3 right-3 flex gap-2 z-10">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      router.push(`/blog/edit/${featured._id}`);
+                    }}
+                    className="w-8 h-8 rounded-full bg-white/95 shadow-sm flex items-center justify-center text-[#4A6B5A] hover:bg-white transition-colors"
+                    title="Edit"
+                  >
+                    <Pencil size={14} strokeWidth={1.75} />
+                  </button>
+                  <button
+                    onClick={(e) => handleDelete(e, featured._id)}
+                    disabled={deletingId === featured._id}
+                    className="w-8 h-8 rounded-full bg-white/95 shadow-sm flex items-center justify-center text-red-600 hover:bg-white transition-colors disabled:opacity-50"
+                    title="Delete"
+                  >
+                    <Trash2 size={14} strokeWidth={1.75} />
+                  </button>
+                </div>
+              )}
+
               <div className="h-56 md:h-full overflow-hidden">
                 <img
                   src={featured.image}
@@ -105,15 +158,38 @@ export default function BlogPage() {
             </Link>
           )}
 
-          {/* Remaining posts grid */}
           {rest.length > 0 && (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {rest.map((post) => (
                 <Link
                   key={post._id}
                   href={`/blog/${post.slug}`}
-                  className="group bg-white rounded-xl overflow-hidden hover:-translate-y-1 hover:shadow-md transition-all"
+                  className="group bg-white rounded-xl overflow-hidden hover:-translate-y-1 hover:shadow-md transition-all relative"
                 >
+                  {isAdmin && (
+                    <div className="absolute top-3 right-3 flex gap-2 z-10">
+                      <button
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          router.push(`/blog/edit/${post._id}`);
+                        }}
+                        className="w-8 h-8 rounded-full bg-white/95 shadow-sm flex items-center justify-center text-[#4A6B5A] hover:bg-white transition-colors"
+                        title="Edit"
+                      >
+                        <Pencil size={14} strokeWidth={1.75} />
+                      </button>
+                      <button
+                        onClick={(e) => handleDelete(e, post._id)}
+                        disabled={deletingId === post._id}
+                        className="w-8 h-8 rounded-full bg-white/95 shadow-sm flex items-center justify-center text-red-600 hover:bg-white transition-colors disabled:opacity-50"
+                        title="Delete"
+                      >
+                        <Trash2 size={14} strokeWidth={1.75} />
+                      </button>
+                    </div>
+                  )}
+
                   <div className="overflow-hidden">
                     <img
                       src={post.image}

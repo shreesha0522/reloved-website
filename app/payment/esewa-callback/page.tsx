@@ -1,15 +1,14 @@
 // app/payment/esewa-callback/page.tsx
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { verifyEsewaPayment } from "@/lib/esewa";
 
-export default function EsewaCallbackPage() {
+function EsewaCallbackContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [status, setStatus] = useState<"verifying" | "error">("verifying");
   const [errorMsg, setErrorMsg] = useState("");
-
   useEffect(() => {
     const data = searchParams.get("data");
     if (!data) {
@@ -17,7 +16,6 @@ export default function EsewaCallbackPage() {
       setErrorMsg("No payment data received.");
       return;
     }
-
     async function verify() {
       const result = await verifyEsewaPayment(data!);
       if (result.success && result.order) {
@@ -29,7 +27,6 @@ export default function EsewaCallbackPage() {
     }
     verify();
   }, [searchParams, router]);
-
   return (
     <div className="min-h-screen bg-[#F4F6F2] flex items-center justify-center px-6 text-center">
       {status === "verifying" ? (
@@ -46,5 +43,13 @@ export default function EsewaCallbackPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function EsewaCallbackPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-[#F4F6F2]" />}>
+      <EsewaCallbackContent />
+    </Suspense>
   );
 }
