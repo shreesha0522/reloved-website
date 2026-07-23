@@ -2,7 +2,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isLoggedIn } from "@/lib/auth";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { CartItem, getCart, getCartTotal } from "@/lib/cart";
 import { createOrder } from "@/lib/orders";
 import { getProfile, UserProfile } from "@/lib/user";
@@ -27,6 +27,7 @@ function getDeliveryEstimate() {
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { loading: checkingSession, isLoggedIn } = useCurrentUser();
   const [checking, setChecking] = useState(true);
   const [items, setItems] = useState<CartItem[]>([]);
   const [itemTotal, setItemTotal] = useState<number>(0);
@@ -35,7 +36,8 @@ export default function CheckoutPage() {
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    if (!isLoggedIn()) {
+    if (checkingSession) return;
+    if (!isLoggedIn) {
       router.push("/login?redirect=/checkout");
       return;
     }
@@ -56,7 +58,7 @@ export default function CheckoutPage() {
 
       setChecking(false);
     })();
-  }, [router]);
+  }, [checkingSession, isLoggedIn, router]);
 
   if (checking) return null; // or a loading spinner
 
