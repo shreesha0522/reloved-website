@@ -6,6 +6,7 @@ import { getProductById, Product } from "@/lib/products";
 import { addToCart } from "@/lib/cart";
 import { getWishlist, toggleWishlist } from "@/lib/wishlist";
 import { getProductReviews, createReview, deleteReview, Review } from "@/lib/reviews";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 
 
@@ -20,29 +21,17 @@ export default function ProductDetailPage() {
   const [isFav, setIsFav] = useState(false);
   const [added, setAdded] = useState(false);
   const [quantity, setQuantity] = useState(1);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Session state now comes from the server (httpOnly cookie can't be read
+  // client-side), including the user id used to show "delete" on own reviews.
+  const { user, isLoggedIn } = useCurrentUser();
+  const myUserId = user?._id ?? null;
 
   const [reviews, setReviews] = useState<Review[]>([]);
-const [myUserId, setMyUserId] = useState<string | null>(null);
 const [newRating, setNewRating] = useState(5);
 const [newComment, setNewComment] = useState("");
 const [submittingReview, setSubmittingReview] = useState(false);
 const [reviewError, setReviewError] = useState("");
-
-  useEffect(() => {
-    setIsLoggedIn(!!localStorage.getItem("isLoggedIn"));
-  }, []);
-  useEffect(() => {
-  const token = localStorage.getItem("token");
-  if (token) {
-    try {
-      const payload = JSON.parse(atob(token.split(".")[1]));
-      setMyUserId(payload.id);
-    } catch {
-      setMyUserId(null);
-    }
-  }
-}, []);
 
   useEffect(() => {
     async function loadProduct() {

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getAllPosts, deletePost, BlogPost } from "@/lib/blog";
 import { Clock, Pencil, Trash2 } from "lucide-react";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 function readingTime(content: string) {
   const words = content.trim().split(/\s+/).length;
@@ -15,12 +16,8 @@ export default function BlogPage() {
   const router = useRouter();
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(true);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const { isAdmin } = useCurrentUser();
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  useEffect(() => {
-    setIsAdmin(localStorage.getItem("userRole") === "admin");
-  }, []);
 
   useEffect(() => {
     async function load() {

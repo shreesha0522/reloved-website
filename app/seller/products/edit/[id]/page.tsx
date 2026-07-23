@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { getProductById, updateProduct } from "@/lib/products";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 const subcategoryOptions: Record<string, string[]> = {
   "clothing":    ["Tops", "Bottoms", "Dresses"],
@@ -17,8 +18,7 @@ export default function EditProductPage() {
   const params = useParams();
   const productId = params.id as string;
 
-  const [isSeller, setIsSeller] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const { loading: checking, isSeller } = useCurrentUser();
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -34,14 +34,11 @@ export default function EditProductPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const role = localStorage.getItem("userRole");
-    if (role !== "seller") {
+    if (checking) return;
+    if (!isSeller) {
       router.push("/account");
-      return;
     }
-    setIsSeller(true);
-    setChecking(false);
-  }, [router]);
+  }, [checking, isSeller, router]);
 
   useEffect(() => {
     async function loadProduct() {

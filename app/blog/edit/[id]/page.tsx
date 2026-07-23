@@ -1,210 +1,154 @@
 "use client";
-import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import { getPostById, updatePost } from "@/lib/blog";
+import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import {
+  getPendingProducts,
+  approveProduct,
+  rejectProduct,
+  AdminProduct,
+} from "@/lib/admin";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
-function slugify(text: string) {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/\s+/g, "-");
-}
-
-export default function EditBlogPostPage() {
+export default function AdminProductsPage() {
   const router = useRouter();
-  const params = useParams();
-  const id = params.id as string;
+  const { loading: checking, isAdmin } = useCurrentUser();
 
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [checking, setChecking] = useState(true);
-  const [loadingPost, setLoadingPost] = useState(true);
-  const [notFound, setNotFound] = useState(false);
-
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
-  const [slugEdited, setSlugEdited] = useState(false);
-  const [excerpt, setExcerpt] = useState("");
-  const [content, setContent] = useState("");
-  const [image, setImage] = useState("");
-  const [author, setAuthor] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState("");
+  const [products, setProducts] = useState<AdminProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [updatingId, setUpdatingId] = useState<string | null>(null);
+  const [rejectingId, setRejectingId] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState("");
 
   useEffect(() => {
-    const role = localStorage.getItem("userRole");
-    if (role !== "admin") {
+    if (checking) return;
+    if (!isAdmin) {
       router.push("/account");
-      return;
     }
-    setIsAdmin(true);
-    setChecking(false);
-  }, [router]);
+  }, [checking, isAdmin, router]);
+
+  const loadProducts = useCallback(async () => {
+    setLoading(true);
+    const data = await getPendingProducts();
+    if (data.success) setProducts(data.products);
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    if (!isAdmin) return;
+    if (isAdmin) loadProducts();
+  }, [isAdmin, loadProducts]);
 
-    async function load() {
-      const post = await getPostById(id);
-      if (!post) {
-        setNotFound(true);
-        setLoadingPost(false);
-        return;
-      }
-      setTitle(post.title);
-      setSlug(post.slug);
-      setSlugEdited(true); // don't overwrite the existing slug automatically
-      setExcerpt(post.excerpt);
-      setContent(post.content);
-      setImage(post.image);
-      setAuthor(post.author);
-      setLoadingPost(false);
-    }
-    load();
-  }, [isAdmin, id]);
-
-  useEffect(() => {
-    if (!slugEdited) {
-      setSlug(slugify(title));
-    }
-  }, [title, slugEdited]);
-
-  if (checking || loadingPost) return null;
-  if (!isAdmin) return null;
-
-  if (notFound) {
-    return (
-      <div className="min-h-screen bg-[#F4F6F2] px-6 py-20 text-center">
-        <h1 className="font-display text-2xl text-[#1A2E2A] mb-3">Post not found</h1>
-        <button
-          onClick={() => router.push("/blog")}
-          className="text-[#4A6B5A] underline text-sm"
-        >
-          ← Back to journal
-        </button>
-      </div>
-    );
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError("");
-
-    if (!title || !slug || !excerpt || !content || !image) {
-      setError("All fields except author are required.");
-      return;
-    }
-
-    setSubmitting(true);
-    const result = await updatePost(id, { title, slug, excerpt, content, image, author });
-
+  async function handleApprove(id: string) {
+    setUpdatingId(id);
+    const result = await approveProduct(id);
     if (result.success) {
-      router.push("/blog");
+      setProducts((prev) => prev.filter((p) => p._id !== id));
     } else {
-      setError(result.message || "Could not update post.");
-      setSubmitting(false);
+      alert(result.message || "Failed to approve product");
     }
+    setUpdatingId(null);
   }
+
+  async function handleReject(id: string) {
+    setUpdatingId(id);
+    const result = await rejectProduct(id, rejectReason);
+    if (result.success) {
+      setProducts((prev) => prev.filter((p) => p._id !== id));
+      setRejectingId(null);
+      setRejectReason("");
+    } else {
+      alert(result.message || "Failed to reject product");
+    }
+    setUpdatingId(null);
+  }
+
+  if (checking || !isAdmin) return null;
 
   return (
     <div className="min-h-screen bg-[#F4F6F2] px-6 md:px-16 py-10">
-      <h1 className="font-display text-3xl md:text-4xl text-[#1A2E2A] mb-8">Edit blog post</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="font-display text-3xl md:text-4xl text-[#1A2E2A]">
+          Product Approvals
+        </h1>
+        <span className="text-sm text-[#6B7B76]">{products.length} pending</span>
+      </div>
 
-      <form onSubmit={handleSubmit} className="max-w-xl flex flex-col gap-5">
-        {error && (
-          <div className="px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
-            {error}
-          </div>
-        )}
+      {loading ? (
+        <p className="text-sm text-[#6B7B76]">Loading...</p>
+      ) : products.length === 0 ? (
+        <p className="text-sm text-[#6B7B76]">No products awaiting approval. 🎉</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl">
+          {products.map((product) => (
+            <div key={product._id} className="bg-white rounded-xl overflow-hidden">
+              <img
+                src={product.image}
+                alt={product.name}
+                className="w-full h-[200px] object-cover"
+              />
+              <div className="p-5">
+                <h4 className="font-display text-lg mb-1">{product.name}</h4>
+                <p className="text-xs text-[#6B7B76] mb-1 capitalize">{product.category}</p>
+                <p className="text-sm text-[#4A6B5A] font-semibold mb-2">Rs {product.price}</p>
+                <p className="text-xs text-[#6B7B76] mb-3">
+                  Seller: {product.sellerId?.username} ({product.sellerId?.email})
+                </p>
+                {product.description && (
+                  <p className="text-sm text-[#1A2E2A] mb-4 line-clamp-2">
+                    {product.description}
+                  </p>
+                )}
 
-        <div>
-          <label className="block text-sm text-[#1A2E2A] mb-1.5">Title</label>
-          <input
-            type="text"
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white"
-          />
+                {rejectingId === product._id ? (
+                  <div className="flex flex-col gap-2">
+                    <textarea
+                      placeholder="Reason for rejection..."
+                      value={rejectReason}
+                      onChange={(e) => setRejectReason(e.target.value)}
+                      className="text-sm border border-[#D8E0D9] rounded-lg p-2 w-full resize-none"
+                      rows={2}
+                    />
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleReject(product._id)}
+                        disabled={updatingId === product._id}
+                        className="flex-1 text-xs bg-red-600 hover:bg-red-700 text-white rounded-lg py-2 disabled:opacity-50"
+                      >
+                        Confirm Reject
+                      </button>
+                      <button
+                        onClick={() => {
+                          setRejectingId(null);
+                          setRejectReason("");
+                        }}
+                        className="flex-1 text-xs bg-[#E3E9E1] text-[#4a5a55] rounded-lg py-2"
+                      >
+                        Cancel
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => handleApprove(product._id)}
+                      disabled={updatingId === product._id}
+                      className="flex-1 text-xs bg-[#4A6B5A] hover:bg-[#3a5548] text-white rounded-lg py-2.5 disabled:opacity-50 transition-colors"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      onClick={() => setRejectingId(product._id)}
+                      disabled={updatingId === product._id}
+                      className="flex-1 text-xs text-red-600 border border-red-200 rounded-lg py-2.5 hover:bg-red-50 disabled:opacity-50 transition-colors"
+                    >
+                      Reject
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          ))}
         </div>
-
-        <div>
-          <label className="block text-sm text-[#1A2E2A] mb-1.5">
-            Slug <span className="text-xs text-[#6B7B76]">(editable — changing it changes the post URL)</span>
-          </label>
-          <input
-            type="text"
-            value={slug}
-            onChange={(e) => {
-              setSlug(e.target.value);
-              setSlugEdited(true);
-            }}
-            className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white"
-          />
-          <p className="text-xs text-[#6B7B76] mt-1">
-            This will be the URL: /blog/{slug || "your-slug-here"}
-          </p>
-        </div>
-
-        <div>
-          <label className="block text-sm text-[#1A2E2A] mb-1.5">Excerpt</label>
-          <textarea
-            value={excerpt}
-            onChange={(e) => setExcerpt(e.target.value)}
-            rows={2}
-            className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm text-[#1A2E2A] mb-1.5">Content</label>
-          <textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows={10}
-            className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm text-[#1A2E2A] mb-1.5">Cover image URL</label>
-          <input
-            type="text"
-            value={image}
-            onChange={(e) => setImage(e.target.value)}
-            className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white"
-          />
-          {image && (
-            <img src={image} alt="Preview" className="mt-3 w-full h-48 object-cover rounded-lg border border-[#D8E0D9]" />
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm text-[#1A2E2A] mb-1.5">Author</label>
-          <input
-            type="text"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-            className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white"
-          />
-        </div>
-
-        <div className="flex gap-3">
-          <button
-            type="submit"
-            disabled={submitting}
-            className="flex-1 bg-[#4A6B5A] hover:bg-[#3a5548] disabled:opacity-60 text-white font-medium py-3 rounded-lg transition-colors text-sm tracking-wide"
-          >
-            {submitting ? "Saving..." : "Save changes"}
-          </button>
-          <button
-            type="button"
-            onClick={() => router.push("/blog")}
-            className="px-6 border border-[#D8E0D9] text-[#1A2E2A] rounded-lg text-sm hover:bg-white transition-colors"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
+      )}
     </div>
   );
 }

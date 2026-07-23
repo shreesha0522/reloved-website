@@ -16,17 +16,10 @@ export interface UserProfile {
   address?: UserAddress;
 }
 
-function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("token");
-}
-
 export async function getProfile(): Promise<UserProfile | null> {
-  const token = getToken();
-  if (!token) return null;
   try {
     const res = await fetch(`${API_URL}/user/me`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     const data = await res.json();
     return data.success ? data.data : null;
@@ -42,17 +35,11 @@ export async function updateProfile(payload: {
   newPassword?: string;
   address?: Partial<UserAddress>;
 }): Promise<{ success: boolean; message: string; data?: UserProfile }> {
-  const token = getToken();
-  if (!token) {
-    return { success: false, message: "Not logged in" };
-  }
   try {
     const res = await fetch(`${API_URL}/user/update`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
     const data = await res.json();
@@ -63,17 +50,11 @@ export async function updateProfile(payload: {
 }
 
 export async function requestSeller(): Promise<{ success: boolean; message: string; data?: UserProfile }> {
-  const token = getToken();
-  if (!token) {
-    return { success: false, message: "Not logged in" };
-  }
   try {
     const res = await fetch(`${API_URL}/user/request-seller`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
     });
     const data = await res.json();
     return data;

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { getMyProducts, deleteProduct, Product } from "@/lib/products";
 import { getSellerOrders, SellerOrder } from "@/lib/seller";
 import { updateOrderStatus } from "@/lib/orders";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 const STATUS_OPTIONS = [
   "confirmed",
@@ -18,25 +19,24 @@ const STATUS_OPTIONS = [
 
 export default function SellerDashboardPage() {
   const router = useRouter();
-  const [isSeller, setIsSeller] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const { loading: checking, isSeller } = useCurrentUser();
   const [tab, setTab] = useState<"products" | "orders">("products");
   const [products, setProducts] = useState<Product[]>([]);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [orders, setOrders] = useState<SellerOrder[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
+
   useEffect(() => {
-    const role = localStorage.getItem("userRole");
-    if (role !== "seller") {
+    if (checking) return; // wait for the session check to finish
+    if (!isSeller) {
       router.push("/account");
       return;
     }
-    setIsSeller(true);
-    setChecking(false);
     loadProducts();
     loadOrders();
-  }, [router]);
+  }, [checking, isSeller, router]);
+
   async function loadProducts() {
     const data = await getMyProducts();
     setProducts(data);
@@ -64,7 +64,9 @@ export default function SellerDashboardPage() {
     }
     setUpdatingId(null);
   }
+
   if (checking || !isSeller) return null;
+
   return (
     <div className="min-h-screen bg-[#F4F6F2] px-6 md:px-16 py-10">
       <div className="flex items-center justify-between mb-6">

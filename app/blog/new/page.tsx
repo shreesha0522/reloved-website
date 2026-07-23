@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createPost } from "@/lib/blog";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 function slugify(text: string) {
   return text
@@ -13,8 +14,7 @@ function slugify(text: string) {
 
 export default function NewBlogPostPage() {
   const router = useRouter();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const { loading: checking, isAdmin } = useCurrentUser();
 
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
@@ -27,14 +27,11 @@ export default function NewBlogPostPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const role = localStorage.getItem("userRole");
-    if (role !== "admin") {
+    if (checking) return;
+    if (!isAdmin) {
       router.push("/account");
-      return;
     }
-    setIsAdmin(true);
-    setChecking(false);
-  }, [router]);
+  }, [checking, isAdmin, router]);
 
   useEffect(() => {
     if (!slugEdited) {

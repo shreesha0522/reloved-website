@@ -19,11 +19,6 @@ export interface Product {
   rejectionReason?: string;
 }
 
-function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("token");
-}
-
 export async function getAllProducts(category?: string, search?: string): Promise<Product[]> {
   try {
     const params = new URLSearchParams();
@@ -50,11 +45,9 @@ export async function getProductById(id: string): Promise<Product | null> {
 }
 
 export async function getMyProducts(): Promise<Product[]> {
-  const token = getToken();
-  if (!token) return [];
   try {
     const res = await fetch(`${API_URL}/products/seller/mine`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     const data = await res.json();
     return data.success ? data.products : [];
@@ -74,15 +67,11 @@ export async function createProduct(payload: {
   size?: string;
   condition?: string;
 }): Promise<{ success: boolean; product?: Product; message?: string }> {
-  const token = getToken();
-  if (!token) return { success: false, message: "Not logged in" };
   try {
     const res = await fetch(`${API_URL}/products`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
     return await res.json();
@@ -105,15 +94,11 @@ export async function updateProduct(
     condition?: string;
   }
 ): Promise<{ success: boolean; product?: Product; message?: string }> {
-  const token = getToken();
-  if (!token) return { success: false, message: "Not logged in" };
   try {
     const res = await fetch(`${API_URL}/products/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
     return await res.json();
@@ -123,12 +108,10 @@ export async function updateProduct(
 }
 
 export async function deleteProduct(id: string): Promise<{ success: boolean; message?: string }> {
-  const token = getToken();
-  if (!token) return { success: false, message: "Not logged in" };
   try {
     const res = await fetch(`${API_URL}/products/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     return await res.json();
   } catch {

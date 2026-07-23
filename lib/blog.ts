@@ -50,13 +50,10 @@ export async function createPost(post: {
   author: string;
 }): Promise<{ success: boolean; message?: string }> {
   try {
-    const token = localStorage.getItem("token");
     const res = await fetch(`${API_URL}/blog`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(post),
     });
     const data = await res.json();
@@ -78,13 +75,10 @@ export async function updatePost(
   }
 ): Promise<{ success: boolean; message?: string }> {
   try {
-    const token = localStorage.getItem("token");
     const res = await fetch(`${API_URL}/blog/${id}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(post),
     });
     const data = await res.json();
@@ -96,12 +90,9 @@ export async function updatePost(
 
 export async function deletePost(id: string): Promise<{ success: boolean; message?: string }> {
   try {
-    const token = localStorage.getItem("token");
     const res = await fetch(`${API_URL}/blog/${id}`, {
       method: "DELETE",
-      headers: {
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
+      credentials: "include",
     });
     const data = await res.json();
     return { success: !!data.success, message: data.message };

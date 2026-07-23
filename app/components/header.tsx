@@ -7,6 +7,8 @@ import { Search, Heart, ShoppingCart, User, ChevronDown, Menu, X, Package, LogOu
 import { getWishlistCount } from "@/lib/wishlist";
 import { getCartCount } from "@/lib/cart";
 import { getAllProducts, Product } from "@/lib/products";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { logout as logoutRequest } from "@/lib/auth";
 
 
 interface Category {
@@ -48,11 +50,9 @@ export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const [productResults, setProductResults] = useState<Product[]>([]);
   const [searching, setSearching] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const { isLoggedIn, isSeller, isAdmin, refetch } = useCurrentUser();
   const [menuOpen, setMenuOpen] = useState(false);
   const [accountOpen, setAccountOpen] = useState(false);
-  const [isSeller, setIsSeller] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(0);
   const [cartCount, setCartCount] = useState(0);
   const [allProducts, setAllProducts] = useState<Product[]>([]);
@@ -62,12 +62,6 @@ export default function Header() {
   }, []);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const accountRef = useRef<HTMLDivElement>(null);
-
-useEffect(() => {
-  setIsLoggedIn(!!localStorage.getItem("isLoggedIn"));
-  setIsSeller(localStorage.getItem("userRole") === "seller");
-  setIsAdmin(localStorage.getItem("userRole") === "admin");
-}, []);
 
   useEffect(() => {
     async function loadCount() {
@@ -128,16 +122,12 @@ useEffect(() => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  function handleLogout() {
-    localStorage.removeItem("isLoggedIn");
-    localStorage.removeItem("token");
-    localStorage.removeItem("userName");
-    localStorage.removeItem("userRole");
-    setIsLoggedIn(false);
-    setIsSeller(false);
-    setIsAdmin(false);
+  async function handleLogout() {
+    await logoutRequest(); // clears the httpOnly cookie server-side
+    await refetch();       // refreshes local user state to null
     setAccountOpen(false);
     router.push("/");
+    router.refresh();
   }
 
   const filtered = categories.filter((c) =>

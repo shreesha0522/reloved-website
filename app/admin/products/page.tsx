@@ -7,11 +7,11 @@ import {
   rejectProduct,
   AdminProduct,
 } from "@/lib/admin";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 export default function AdminProductsPage() {
   const router = useRouter();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const { loading: checking, isAdmin } = useCurrentUser();
 
   const [products, setProducts] = useState<AdminProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -20,14 +20,11 @@ export default function AdminProductsPage() {
   const [rejectReason, setRejectReason] = useState("");
 
   useEffect(() => {
-    const role = localStorage.getItem("userRole");
-    if (role !== "admin") {
+    if (checking) return;
+    if (!isAdmin) {
       router.push("/account");
-      return;
     }
-    setIsAdmin(true);
-    setChecking(false);
-  }, [router]);
+  }, [checking, isAdmin, router]);
 
   const loadProducts = useCallback(async () => {
     setLoading(true);
