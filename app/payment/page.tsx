@@ -2,7 +2,7 @@
 "use client";
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { isLoggedIn } from "@/lib/auth";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { getOrderById, markOrderPaid, Order } from "@/lib/orders";
 import { initiateEsewaPayment } from "@/lib/esewa";
 
@@ -14,13 +14,15 @@ function PaymentContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
 
+  const { loading: checkingSession, isLoggedIn } = useCurrentUser();
   const [checking, setChecking] = useState(true);
   const [order, setOrder] = useState<Order | null>(null);
   const [method, setMethod] = useState<PaymentMethod>("esewa");
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-    if (!isLoggedIn()) {
+    if (checkingSession) return;
+    if (!isLoggedIn) {
       router.push("/login");
       return;
     }
@@ -39,7 +41,7 @@ function PaymentContent() {
       setChecking(false);
     }
     load();
-  }, [orderId, router]);
+  }, [checkingSession, isLoggedIn, orderId, router]);
 
   if (checking || !order) return null;
 
