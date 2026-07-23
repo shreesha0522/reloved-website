@@ -2,11 +2,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isLoggedIn } from "@/lib/auth";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { CartItem, getCart, removeFromCart, updateQty, getCartTotal } from "@/lib/cart";
 
 export default function CartPage() {
   const router = useRouter();
+  const { loading: checkingSession, isLoggedIn } = useCurrentUser();
   const [items, setItems] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -24,13 +25,13 @@ export default function CartPage() {
   }
 
   async function handleUpdateQty(id: string, qty: number) {
-  if (qty < 1) return;
-  const result = await updateQty(id, qty);
-  if (!result.success) {
-    alert(result.message || "Could not update quantity.");
+    if (qty < 1) return;
+    const result = await updateQty(id, qty);
+    if (!result.success) {
+      alert(result.message || "Could not update quantity.");
+    }
+    await refresh();
   }
-  await refresh();
-}
 
   async function handleRemove(id: string) {
     await removeFromCart(id);
@@ -38,7 +39,8 @@ export default function CartPage() {
   }
 
   function handleCheckout() {
-    if (!isLoggedIn()) {
+    if (checkingSession) return; // session check still in flight, ignore the click
+    if (!isLoggedIn) {
       router.push("/login?redirect=/checkout");
       return;
     }
@@ -115,7 +117,9 @@ export default function CartPage() {
                 <span className="text-sm w-6 text-center">{item.qty}</span>
                 <button
                   onClick={() => handleUpdateQty(item.id, item.qty + 1)}
-                  className="w-7 h-7 border border-[#D8E0D9] rounded text-sm flex-shrink-0"
+                  disabled={item.qty >= 1}
+                  title="Only 1 available — this is a one-of-a-kind thrift item"
+                  className="w-7 h-7 border border-[#D8E0D9] rounded text-sm flex-shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   +
                 </button>
@@ -134,7 +138,9 @@ export default function CartPage() {
                 <span className="text-sm w-6 text-center">{item.qty}</span>
                 <button
                   onClick={() => handleUpdateQty(item.id, item.qty + 1)}
-                  className="w-7 h-7 border border-[#D8E0D9] rounded text-sm"
+                  disabled={item.qty >= 1}
+                  title="Only 1 available — this is a one-of-a-kind thrift item"
+                  className="w-7 h-7 border border-[#D8E0D9] rounded text-sm disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   +
                 </button>

@@ -13,13 +13,13 @@ import {
   AdminUser,
   SellerRequestUser,
 } from "@/lib/admin";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 const ROLE_OPTIONS = ["user", "seller", "admin"];
 
 export default function AdminUsersPage() {
   const router = useRouter();
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const { loading: checking, isAdmin } = useCurrentUser();
 
   const [users, setUsers] = useState<AdminUser[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,14 +35,11 @@ export default function AdminUsersPage() {
   const [loadingRequests, setLoadingRequests] = useState(true);
 
   useEffect(() => {
-    const role = localStorage.getItem("userRole");
-    if (role !== "admin") {
+    if (checking) return;
+    if (!isAdmin) {
       router.push("/account");
-      return;
     }
-    setIsAdmin(true);
-    setChecking(false);
-  }, [router]);
+  }, [checking, isAdmin, router]);
 
   const loadUsers = useCallback(async () => {
     setLoading(true);

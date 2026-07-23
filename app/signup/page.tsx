@@ -1,6 +1,18 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+
+type PasswordCheck = { label: string; passed: boolean };
+
+function getPasswordChecks(password: string): PasswordCheck[] {
+  return [
+    { label: "At least 8 characters", passed: password.length >= 8 },
+    { label: "One uppercase letter", passed: /[A-Z]/.test(password) },
+    { label: "One lowercase letter", passed: /[a-z]/.test(password) },
+    { label: "One number", passed: /[0-9]/.test(password) },
+    { label: "One special character", passed: /[^A-Za-z0-9]/.test(password) },
+  ];
+}
 
 export default function SignupPage() {
   const router = useRouter();
@@ -12,11 +24,19 @@ export default function SignupPage() {
   const [agreed, setAgreed]       = useState(false);
   const [error, setError]         = useState("");
   const [loading, setLoading]     = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
+
+  const passwordChecks = useMemo(() => getPasswordChecks(password), [password]);
+  const passwordValid = passwordChecks.every((c) => c.passed);
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
+    if (!passwordValid) {
+      setError("Please meet all password requirements below.");
+      return;
+    }
     if (password !== confirm) {
       setError("Passwords do not match.");
       return;
@@ -126,9 +146,25 @@ export default function SignupPage() {
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onFocus={() => setPasswordFocused(true)}
               required
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
+            {(passwordFocused || password.length > 0) && (
+              <ul className="mt-2 flex flex-col gap-1">
+                {passwordChecks.map((check) => (
+                  <li
+                    key={check.label}
+                    className={`text-xs flex items-center gap-1.5 ${
+                      check.passed ? "text-[#4A6B5A]" : "text-[#9aa5a0]"
+                    }`}
+                  >
+                    <span>{check.passed ? "✓" : "○"}</span>
+                    {check.label}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* Confirm Password */}

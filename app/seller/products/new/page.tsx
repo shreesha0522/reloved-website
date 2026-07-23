@@ -1,17 +1,17 @@
-// app/seller/products/new/page.tsx — only the two grid divs change, rest stays identical
+// app/seller/products/new/page.tsx
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createProduct } from "@/lib/products";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 export default function NewProductPage() {
   const router = useRouter();
-  const [isSeller, setIsSeller] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const { loading: checking, isSeller } = useCurrentUser();
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
- const [category, setCategory] = useState("clothing");
+  const [category, setCategory] = useState("clothing");
   const [subcategory, setSubcategory] = useState("");
   const [image, setImage] = useState("");
   const [description, setDescription] = useState("");
@@ -21,14 +21,11 @@ export default function NewProductPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const role = localStorage.getItem("userRole");
-    if (role !== "seller") {
+    if (checking) return;
+    if (!isSeller) {
       router.push("/account");
-      return;
     }
-    setIsSeller(true);
-    setChecking(false);
-  }, [router]);
+  }, [checking, isSeller, router]);
 
   if (checking) return null;
   if (!isSeller) return null;
@@ -43,16 +40,16 @@ export default function NewProductPage() {
     }
 
     setSubmitting(true);
-const result = await createProduct({
-  name,
-  price: Number(price),
-  category,
-  subcategory: subcategory || undefined,
-  image,
-  description,
-  stock: Number(stock),
-  condition,
-});
+    const result = await createProduct({
+      name,
+      price: Number(price),
+      category,
+      subcategory: subcategory || undefined,
+      image,
+      description,
+      stock: Number(stock),
+      condition,
+    });
 
     if (result.success) {
       router.push("/seller/dashboard");
