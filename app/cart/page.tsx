@@ -2,11 +2,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isLoggedIn } from "@/lib/auth";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { CartItem, getCart, removeFromCart, updateQty, getCartTotal } from "@/lib/cart";
 
 export default function CartPage() {
   const router = useRouter();
+  const { loading: checkingSession, isLoggedIn } = useCurrentUser();
   const [items, setItems] = useState<CartItem[]>([]);
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
@@ -38,7 +39,8 @@ export default function CartPage() {
   }
 
   function handleCheckout() {
-    if (!isLoggedIn()) {
+    if (checkingSession) return; // session check still in flight, ignore the click
+    if (!isLoggedIn) {
       router.push("/login?redirect=/checkout");
       return;
     }
