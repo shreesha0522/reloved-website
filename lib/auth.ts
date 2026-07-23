@@ -7,6 +7,7 @@ export type CurrentUser = {
   username: string;
   email: string;
   role: "admin" | "user" | "seller";
+  mfaEnabled: boolean;
 };
 
 export async function getCurrentUser(): Promise<CurrentUser | null> {
