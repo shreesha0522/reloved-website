@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { verifyLoginMFA } from "@/lib/mfa";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -9,6 +10,20 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError]               = useState("");
   const [loading, setLoading]           = useState(false);
+
+  // --- MFA step state ---
+  const [mfaStep, setMfaStep] = useState(false);
+  const [mfaCode, setMfaCode] = useState("");
+  const [mfaSubmitting, setMfaSubmitting] = useState(false);
+
+  function routeAfterLogin(role: string) {
+    if (role === "seller") {
+      router.push("/seller/dashboard");
+    } else {
+      router.push("/");
+    }
+    router.refresh();
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -30,20 +45,88 @@ export default function LoginPage() {
         return;
       }
 
-      // No token handling here anymore — the server set it as an httpOnly
-      // cookie, which JS can't (and shouldn't) touch. We only keep a small,
-      // non-sensitive bit of UI state so we can route correctly.
-      if (data.data.role === "seller") {
-        router.push("/seller/dashboard");
-      } else {
-        router.push("/");
+      // Password was correct but this account has 2FA enabled —
+      // switch to the code-entry screen instead of logging in yet.
+      if (data.mfaRequired) {
+        setMfaStep(true);
+        return;
       }
-      router.refresh();
+
+      routeAfterLogin(data.data.role);
     } catch {
       setError("Could not connect to server. Make sure backend is running.");
     } finally {
       setLoading(false);
     }
+  }
+
+  async function handleVerifyMfa(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+
+    if (!mfaCode.trim()) {
+      setError("Please enter the 6-digit code.");
+      return;
+    }
+
+    setMfaSubmitting(true);
+    const result = await verifyLoginMFA(mfaCode.trim());
+    setMfaSubmitting(false);
+
+    if (!result.success) {
+      setError(result.message || "Invalid code. Please try again.");
+      return;
+    }
+
+    routeAfterLogin(result.data.role);
+  }
+
+  if (mfaStep) {
+    return (
+      <div className="min-h-screen bg-[#F4F6F2] flex items-center justify-center px-6 py-10">
+        <div className="w-full max-w-sm">
+          <h1 className="font-display text-2xl md:text-3xl text-[#1A2E2A] mb-2 text-center">
+            Two-Factor Authentication
+          </h1>
+          <p className="text-sm text-[#6B7B76] mb-6 text-center">
+            Enter the 6-digit code from your authenticator app.
+          </p>
+
+          {error && (
+            <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleVerifyMfa} className="flex flex-col gap-4">
+            <input
+              type="text"
+              inputMode="numeric"
+              autoFocus
+              maxLength={6}
+              placeholder="000000"
+              value={mfaCode}
+              onChange={(e) => setMfaCode(e.target.value.replace(/\D/g, ""))}
+              className="w-full border border-[#D8E0D9] rounded-lg px-4 py-3 text-center text-lg tracking-[0.4em] bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
+            />
+            <button
+              type="submit"
+              disabled={mfaSubmitting}
+              className="w-full bg-[#4A6B5A] hover:bg-[#3a5548] disabled:opacity-60 text-white font-medium py-3 rounded-lg transition-colors text-sm tracking-wide"
+            >
+              {mfaSubmitting ? "Verifying..." : "Verify & Log In"}
+            </button>
+            <button
+              type="button"
+              onClick={() => { setMfaStep(false); setMfaCode(""); setError(""); }}
+              className="text-sm text-[#6B7B76] hover:text-[#4A6B5A] text-center"
+            >
+              ← Back to login
+            </button>
+          </form>
+        </div>
+      </div>
+    );
   }
 
   return (
