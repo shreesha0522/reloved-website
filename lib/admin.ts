@@ -196,3 +196,26 @@ export async function rejectSellerRequest(
     return { success: false, message: "Something went wrong" };
   }
 }
+export interface AuditLog {
+  _id: string;
+  action: string;
+  performedBy: { _id: string; username: string; email: string };
+  targetUser?: { _id: string; username: string; email: string };
+  details?: Record<string, unknown>;
+  createdAt: string;
+}
+
+export async function getAuditLogs(): Promise<{
+  success: boolean;
+  logs: AuditLog[];
+  message?: string;
+}> {
+  try {
+    const res = await fetch(`${API_URL}/admin/users/audit-logs`, {
+      credentials: "include",
+    });
+    return await res.json();
+  } catch {
+    return { success: false, logs: [], message: "Something went wrong" };
+  }
+}
