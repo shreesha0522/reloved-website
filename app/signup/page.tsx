@@ -14,6 +14,24 @@ function getPasswordChecks(password: string): PasswordCheck[] {
   ];
 }
 
+type Strength = { label: string; score: number; color: string };
+
+function getPasswordStrength(password: string): Strength {
+  if (password.length === 0) return { label: "", score: 0, color: "transparent" };
+
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[a-z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 2) return { label: "Weak", score: 1, color: "#C0392B" };
+  if (score <= 4) return { label: "Medium", score: 2, color: "#D4A017" };
+  return { label: "Strong", score: 3, color: "#4A6B5A" };
+}
+
 export default function SignupPage() {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
@@ -28,6 +46,7 @@ export default function SignupPage() {
 
   const passwordChecks = useMemo(() => getPasswordChecks(password), [password]);
   const passwordValid = passwordChecks.every((c) => c.passed);
+  const strength = useMemo(() => getPasswordStrength(password), [password]);
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
@@ -150,6 +169,29 @@ export default function SignupPage() {
               required
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
+
+            {password.length > 0 && (
+              <div className="mt-2">
+                <div className="flex gap-1.5 h-1.5">
+                  {[1, 2, 3].map((bar) => (
+                    <div
+                      key={bar}
+                      className="flex-1 rounded-full transition-colors"
+                      style={{
+                        backgroundColor: bar <= strength.score ? strength.color : "#E3E9E4",
+                      }}
+                    />
+                  ))}
+                </div>
+                <p
+                  className="text-xs mt-1 font-medium"
+                  style={{ color: strength.color }}
+                >
+                  {strength.label} password
+                </p>
+              </div>
+            )}
+
             {(passwordFocused || password.length > 0) && (
               <ul className="mt-2 flex flex-col gap-1">
                 {passwordChecks.map((check) => (
@@ -190,7 +232,7 @@ export default function SignupPage() {
             />
             <span className="text-xs text-[#4a5a55] leading-relaxed">
               I agree with the{" "}
-              <button type="button" className="underline hover:text-[#4A6B5A]">Terms of Service</button>
+              <button type="button" className="underline hover:text-[#4A6B5A]">Terms ofService</button>
               {" "}and{" "}
               <button type="button" className="underline hover:text-[#4A6B5A]">Privacy Policy</button>
             </span>
@@ -222,7 +264,7 @@ export default function SignupPage() {
               <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
               <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
               <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.151.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
             </svg>
             Continue with Google
           </button>
