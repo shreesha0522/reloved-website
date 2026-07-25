@@ -1,6 +1,7 @@
 "use client";
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import ReCAPTCHA from "react-google-recaptcha";
 
 type PasswordCheck = { label: string; passed: boolean };
 
@@ -43,6 +44,7 @@ export default function SignupPage() {
   const [error, setError]         = useState("");
   const [loading, setLoading]     = useState(false);
   const [passwordFocused, setPasswordFocused] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const passwordChecks = useMemo(() => getPasswordChecks(password), [password]);
   const passwordValid = passwordChecks.every((c) => c.passed);
@@ -64,6 +66,10 @@ export default function SignupPage() {
       setError("Please agree to the Terms of Service.");
       return;
     }
+    if (!captchaToken) {
+      setError("Please complete the CAPTCHA.");
+      return;
+    }
 
     setLoading(true);
     try {
@@ -74,6 +80,7 @@ export default function SignupPage() {
           username: firstName + " " + lastName,
           email,
           password,
+          captchaToken,
         }),
       });
 
@@ -237,6 +244,12 @@ export default function SignupPage() {
               <button type="button" className="underline hover:text-[#4A6B5A]">Privacy Policy</button>
             </span>
           </label>
+
+          <ReCAPTCHA
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+            onChange={(token) => setCaptchaToken(token)}
+            onExpired={() => setCaptchaToken(null)}
+          />
 
           {/* Submit */}
           <button
