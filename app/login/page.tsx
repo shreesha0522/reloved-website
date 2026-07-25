@@ -60,6 +60,12 @@ export default function LoginPage() {
         return;
       }
 
+      if (data.data.passwordExpired) {
+        router.push("/account?passwordExpired=true");
+        router.refresh();
+        return;
+      }
+
       routeAfterLogin(data.data.role);
     } catch {
       setError("Could not connect to server. Make sure backend is running.");
@@ -83,6 +89,12 @@ export default function LoginPage() {
 
     if (!result.success) {
       setError(result.message || "Invalid code. Please try again.");
+      return;
+    }
+
+    if (result.data.passwordExpired) {
+      router.push("/account?passwordExpired=true");
+      router.refresh();
       return;
     }
 
