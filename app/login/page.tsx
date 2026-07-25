@@ -154,43 +154,48 @@ export default function LoginPage() {
         <h1 className="font-display text-3xl md:text-4xl text-[#1A2E2A] mb-6">Login</h1>
 
         {error && (
-          <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
+          <div role="alert" aria-live="assertive" className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
             {error}
           </div>
         )}
 
         <form onSubmit={handleLogin} className="flex flex-col gap-5">
           <div>
-            <label className="block text-sm text-[#1A2E2A] mb-1.5">Email</label>
+            <label htmlFor="login-email" className="block text-sm text-[#1A2E2A] mb-1.5">Email</label>
             <input
+              id="login-email"
               type="email"
               placeholder="shreesha@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              aria-required="true"
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] placeholder:text-[#bbb] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
           </div>
 
           <div>
             <div className="flex justify-between mb-1.5">
-              <label className="text-sm text-[#1A2E2A]">Password</label>
+              <label htmlFor="login-password" className="text-sm text-[#1A2E2A]">Password</label>
               <button type="button" className="text-xs text-[#6B7B76] hover:text-[#4A6B5A]">
                 Forgot Password?
               </button>
             </div>
             <div className="relative">
               <input
+                id="login-password"
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                aria-required="true"
                 className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30 pr-10"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7B76] hover:text-[#1A2E2A] transition-colors"
               >
                 {showPassword ? (

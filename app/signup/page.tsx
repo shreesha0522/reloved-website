@@ -118,7 +118,7 @@ export default function SignupPage() {
         </h1>
 
         {error && (
-          <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
+          <div role="alert" aria-live="assertive" className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
             {error}
           </div>
         )}
@@ -128,24 +128,28 @@ export default function SignupPage() {
           {/* First + Last name */}
           <div className="flex flex-col md:flex-row gap-3">
             <div className="flex-1">
-              <label className="block text-sm text-[#1A2E2A] mb-1.5">First Name</label>
+              <label htmlFor="signup-firstname" className="block text-sm text-[#1A2E2A] mb-1.5">First Name</label>
               <input
+                id="signup-firstname"
                 type="text"
                 placeholder="Shreesha"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
+                aria-required="true"
                 className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] placeholder:text-[#bbb] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
               />
             </div>
             <div className="flex-1">
-              <label className="block text-sm text-[#1A2E2A] mb-1.5">Last Name</label>
+              <label htmlFor="signup-lastname" className="block text-sm text-[#1A2E2A] mb-1.5">Last Name</label>
               <input
+                id="signup-lastname"
                 type="text"
                 placeholder="Shrestha"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
+                aria-required="true"
                 className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] placeholder:text-[#bbb] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
               />
             </div>
@@ -153,27 +157,32 @@ export default function SignupPage() {
 
           {/* Email */}
           <div>
-            <label className="block text-sm text-[#1A2E2A] mb-1.5">Email</label>
+            <label htmlFor="signup-email" className="block text-sm text-[#1A2E2A] mb-1.5">Email</label>
             <input
+              id="signup-email"
               type="email"
               placeholder="shreesha@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              aria-required="true"
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] placeholder:text-[#bbb] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-sm text-[#1A2E2A] mb-1.5">Password</label>
+            <label htmlFor="signup-password" className="block text-sm text-[#1A2E2A] mb-1.5">Password</label>
             <input
+              id="signup-password"
               type="password"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               onFocus={() => setPasswordFocused(true)}
               required
+              aria-required="true"
+              aria-describedby="password-requirements"
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
 
@@ -200,7 +209,7 @@ export default function SignupPage() {
             )}
 
             {(passwordFocused || password.length > 0) && (
-              <ul className="mt-2 flex flex-col gap-1">
+              <ul id="password-requirements" className="mt-2 flex flex-col gap-1">
                 {passwordChecks.map((check) => (
                   <li
                     key={check.label}
@@ -218,13 +227,15 @@ export default function SignupPage() {
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm text-[#1A2E2A] mb-1.5">Confirm Password</label>
+            <label htmlFor="signup-confirm" className="block text-sm text-[#1A2E2A] mb-1.5">Confirm Password</label>
             <input
+              id="signup-confirm"
               type="password"
               placeholder="••••••••"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               required
+              aria-required="true"
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
           </div>

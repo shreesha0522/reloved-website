@@ -109,6 +109,7 @@ export default function CheckoutPage() {
               <h2 className="font-display text-xl text-[#1A2E2A]">Shipping Address</h2>
               <button
                 onClick={() => router.push("/account")}
+                aria-label="Edit shipping address"
                 className="text-sm text-[#4A6B5A]"
               >
                 Edit
@@ -137,7 +138,8 @@ export default function CheckoutPage() {
 
           {/* Delivery or Pickup */}
           <div className="bg-white/60 rounded-xl p-6">
-            <h2 className="font-display text-xl text-[#1A2E2A] mb-4">Delivery or Pickup</h2>
+            <fieldset>
+            <legend className="font-display text-xl text-[#1A2E2A] mb-4">Delivery or Pickup</legend>
 
             <label
               className={`flex justify-between items-center rounded-lg px-4 py-3 mb-3 cursor-pointer border ${
@@ -184,6 +186,7 @@ export default function CheckoutPage() {
               </div>
               <span className="text-sm text-[#1A2E2A]">Free</span>
             </label>
+            </fieldset>
           </div>
 
           {/* Package — lists all items from the real cart */}
@@ -222,6 +225,7 @@ export default function CheckoutPage() {
               <h2 className="font-display text-xl text-[#1A2E2A]">Invoice and Contact Info</h2>
               <button
                 onClick={() => router.push("/account")}
+                aria-label="Edit contact info"
                 className="text-sm text-[#4A6B5A]"
               >
                 Edit
@@ -247,7 +251,7 @@ export default function CheckoutPage() {
 
           <div className="h-px bg-[#D8E0D9] my-3" />
 
-          <div className="flex justify-between text-base font-medium mb-5">
+          <div className="flex justify-between text-base font-medium mb-5" aria-live="polite">
             <span className="text-[#1A2E2A]">Total</span>
             <span className="text-[#4A6B5A]">Rs {total}</span>
           </div>
