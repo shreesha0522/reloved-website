@@ -3,14 +3,22 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { getProductById, updateProduct } from "@/lib/products";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+
+const subcategoryOptions: Record<string, string[]> = {
+  "clothing":    ["Tops", "Bottoms", "Dresses"],
+  "furniture":   ["Chairs", "Tables", "Storage"],
+  "books":       ["Fiction", "Non-Fiction", "Children's"],
+  "accessories": ["Bags", "Scarves"],
+  "home-goods":  ["Kitchenware", "Decor", "Textiles"],
+};
 
 export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
   const productId = params.id as string;
 
-  const [isSeller, setIsSeller] = useState(false);
-  const [checking, setChecking] = useState(true);
+  const { loading: checking, isSeller } = useCurrentUser();
   const [loadingProduct, setLoadingProduct] = useState(true);
   const [notFound, setNotFound] = useState(false);
 
@@ -26,14 +34,11 @@ export default function EditProductPage() {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const role = localStorage.getItem("userRole");
-    if (role !== "seller") {
+    if (checking) return;
+    if (!isSeller) {
       router.push("/account");
-      return;
     }
-    setIsSeller(true);
-    setChecking(false);
-  }, [router]);
+  }, [checking, isSeller, router]);
 
   useEffect(() => {
     async function loadProduct() {
@@ -56,6 +61,14 @@ export default function EditProductPage() {
     }
     loadProduct();
   }, [productId]);
+
+  // If category changes and the current subcategory no longer belongs to it, reset it
+  useEffect(() => {
+    const validOptions = subcategoryOptions[category] || [];
+    if (subcategory && !validOptions.includes(subcategory)) {
+      setSubcategory("");
+    }
+  }, [category]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (checking || loadingProduct) return null;
   if (!isSeller) return null;
@@ -102,6 +115,8 @@ export default function EditProductPage() {
       setSubmitting(false);
     }
   }
+
+  const currentSubOptions = subcategoryOptions[category] || [];
 
   return (
     <div className="min-h-screen bg-[#F4F6F2] px-4 md:px-16 py-8 md:py-10">
@@ -164,13 +179,16 @@ export default function EditProductPage() {
           </div>
           <div>
             <label className="block text-sm text-[#1A2E2A] mb-1.5">Subcategory (optional)</label>
-            <input
-              type="text"
+            <select
               value={subcategory}
               onChange={(e) => setSubcategory(e.target.value)}
-              placeholder="Necklaces"
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white"
-            />
+            >
+              <option value="">None</option>
+              {currentSubOptions.map((opt) => (
+                <option key={opt} value={opt}>{opt}</option>
+              ))}
+            </select>
           </div>
         </div>
 

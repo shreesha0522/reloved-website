@@ -10,11 +10,6 @@ export interface Review {
   createdAt: string;
 }
 
-function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("token");
-}
-
 export async function getProductReviews(productId: string): Promise<Review[]> {
   try {
     const res = await fetch(`${API_URL}/reviews/${productId}`);
@@ -29,15 +24,11 @@ export async function createReview(
   productId: string,
   payload: { rating: number; comment: string }
 ): Promise<{ success: boolean; review?: Review; message?: string }> {
-  const token = getToken();
-  if (!token) return { success: false, message: "Not logged in" };
   try {
     const res = await fetch(`${API_URL}/reviews/${productId}`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
     return await res.json();
@@ -49,12 +40,10 @@ export async function createReview(
 export async function deleteReview(
   reviewId: string
 ): Promise<{ success: boolean; message?: string }> {
-  const token = getToken();
-  if (!token) return { success: false, message: "Not logged in" };
   try {
     const res = await fetch(`${API_URL}/reviews/${reviewId}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     return await res.json();
   } catch {
