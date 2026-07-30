@@ -13,7 +13,7 @@ const categoryTitles: Record<string, string> = {
   "home-goods": "Home Goods",
 };
 const categoryFilters: Record<string, string[]> = {
-  "clothing":   ["All Items", "Tops", "Bottoms", "Dresses", "Outerwear"],
+  "clothing":   ["All Items", "Tops", "Bottoms", "Dresses"],
   "furniture":  ["All Items", "Chairs", "Tables", "Storage"],
   "books":      ["All Items", "Fiction", "Non-Fiction", "Children's"],
   "accessories":["All Items", "Bags", "Scarves"],

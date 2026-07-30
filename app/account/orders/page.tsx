@@ -2,7 +2,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isLoggedIn } from "@/lib/auth";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { getMyOrders, Order } from "@/lib/orders";
 
 const statusLabels: Record<string, string> = {
@@ -16,11 +16,13 @@ const statusLabels: Record<string, string> = {
 
 export default function MyOrdersPage() {
   const router = useRouter();
+  const { loading: checking, isLoggedIn } = useCurrentUser();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!isLoggedIn()) {
+    if (checking) return;
+    if (!isLoggedIn) {
       router.push("/login?redirect=/account/orders");
       return;
     }
@@ -31,9 +33,9 @@ export default function MyOrdersPage() {
       setLoading(false);
     }
     load();
-  }, [router]);
+  }, [checking, isLoggedIn, router]);
 
-  if (loading) {
+  if (checking || loading) {
     return (
       <div className="min-h-screen bg-[#F4F6F2] px-10 py-12">
         <p className="text-[#6B7B76] text-sm">Loading your orders...</p>

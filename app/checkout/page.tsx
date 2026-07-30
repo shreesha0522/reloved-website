@@ -2,20 +2,42 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { isLoggedIn } from "@/lib/auth";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { CartItem, getCart, getCartTotal } from "@/lib/cart";
 import { createOrder } from "@/lib/orders";
+import { getProfile, UserProfile } from "@/lib/user";
+import { Package, ShieldCheck, Truck } from "lucide-react";
+
+function getDeliveryEstimate() {
+  const start = new Date();
+  start.setDate(start.getDate() + 3);
+  const end = new Date();
+  end.setDate(end.getDate() + 5);
+
+  const startDay = start.getDate();
+  const endDay = end.getDate();
+  const startMonth = start.toLocaleDateString("en-US", { month: "short" });
+  const endMonth = end.toLocaleDateString("en-US", { month: "short" });
+
+  if (startMonth === endMonth) {
+    return `${startDay}–${endDay} ${endMonth}`;
+  }
+  return `${startDay} ${startMonth} – ${endDay} ${endMonth}`;
+}
 
 export default function CheckoutPage() {
   const router = useRouter();
+  const { loading: checkingSession, isLoggedIn } = useCurrentUser();
   const [checking, setChecking] = useState(true);
   const [items, setItems] = useState<CartItem[]>([]);
   const [itemTotal, setItemTotal] = useState<number>(0);
   const [deliveryOption, setDeliveryOption] = useState<"standard" | "pickup">("standard");
   const [placing, setPlacing] = useState(false);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
 
   useEffect(() => {
-    if (!isLoggedIn()) {
+    if (checkingSession) return;
+    if (!isLoggedIn) {
       router.push("/login?redirect=/checkout");
       return;
     }
@@ -30,9 +52,13 @@ export default function CheckoutPage() {
       setItems(cart);
       const total = await getCartTotal();
       setItemTotal(total);
+
+      const userProfile = await getProfile();
+      setProfile(userProfile);
+
       setChecking(false);
     })();
-  }, [router]);
+  }, [checkingSession, isLoggedIn, router]);
 
   if (checking) return null; // or a loading spinner
 
@@ -40,15 +66,22 @@ export default function CheckoutPage() {
   const total = itemTotal + deliveryFee;
   const totalItemCount = items.reduce((sum, item) => sum + item.qty, 0);
 
+  const hasAddress = !!(profile?.address?.street && profile?.address?.city);
+
   async function handleProceedToPay() {
+    if (!hasAddress) {
+      router.push("/account");
+      return;
+    }
+
     setPlacing(true);
 
     const result = await createOrder({
       deliveryOption,
       shippingAddress: {
-        name: "Shreesha Shrestha",
-        phone: "9847*****",
-        address: "Dillibazar, pipolbot",
+        name: profile!.username,
+        phone: profile!.address!.phone,
+        address: `${profile!.address!.street}, ${profile!.address!.city}`,
       },
       paymentMethod: "esewa", // default; user picks the real method on the payment page
     });
@@ -74,18 +107,39 @@ export default function CheckoutPage() {
           <div className="bg-white/60 rounded-xl p-6">
             <div className="flex justify-between items-start mb-4">
               <h2 className="font-display text-xl text-[#1A2E2A]">Shipping Address</h2>
-              <button className="text-sm text-[#4A6B5A]">Edit</button>
+              <button
+                onClick={() => router.push("/account")}
+                aria-label="Edit shipping address"
+                className="text-sm text-[#4A6B5A]"
+              >
+                Edit
+              </button>
             </div>
-            <p className="text-sm text-[#1A2E2A]">
-              Shreesha Shrestha <span className="ml-2 text-xs bg-[#D8E0D9] px-2 py-0.5 rounded">HOME</span>
-            </p>
-            <p className="text-sm text-[#1A2E2A] mt-1">9847*****</p>
-            <p className="text-sm text-[#1A2E2A] mt-1">Dillibazar, pipolbot</p>
+            {hasAddress ? (
+              <>
+                <p className="text-sm text-[#1A2E2A]">
+                  {profile!.username} <span className="ml-2 text-xs bg-[#D8E0D9] px-2 py-0.5 rounded">HOME</span>
+                </p>
+                <p className="text-sm text-[#1A2E2A] mt-1">{profile!.address!.phone}</p>
+                <p className="text-sm text-[#1A2E2A] mt-1">
+                  {profile!.address!.street}, {profile!.address!.city}
+                </p>
+              </>
+            ) : (
+              <p className="text-sm text-[#6B7B76]">
+                No delivery address on file yet.{" "}
+                <button onClick={() => router.push("/account")} className="text-[#4A6B5A] underline">
+                  Add one now
+                </button>{" "}
+                before placing your order.
+              </p>
+            )}
           </div>
 
           {/* Delivery or Pickup */}
           <div className="bg-white/60 rounded-xl p-6">
-            <h2 className="font-display text-xl text-[#1A2E2A] mb-4">Delivery or Pickup</h2>
+            <fieldset>
+            <legend className="font-display text-xl text-[#1A2E2A] mb-4">Delivery or Pickup</legend>
 
             <label
               className={`flex justify-between items-center rounded-lg px-4 py-3 mb-3 cursor-pointer border ${
@@ -104,7 +158,7 @@ export default function CheckoutPage() {
                   <p className={`text-sm font-medium ${deliveryOption === "standard" ? "text-[#4A6B5A]" : "text-[#1A2E2A]"}`}>
                     Standard Delivery
                   </p>
-                  <p className="text-xs text-[#6B7B76]">Get it by 17–18 May</p>
+                  <p className="text-xs text-[#6B7B76]">Get it by {getDeliveryEstimate()}</p>
                 </div>
               </div>
               <span className="text-sm text-[#1A2E2A]">Rs 180</span>
@@ -132,11 +186,15 @@ export default function CheckoutPage() {
               </div>
               <span className="text-sm text-[#1A2E2A]">Free</span>
             </label>
+            </fieldset>
           </div>
 
           {/* Package — lists all items from the real cart */}
           <div className="bg-white/60 rounded-xl p-6">
-            <p className="text-sm text-[#1A2E2A] mb-4">📦 Package 1 of 1 ({totalItemCount} item{totalItemCount !== 1 ? "s" : ""})</p>
+            <p className="text-sm text-[#1A2E2A] mb-4 flex items-center gap-2">
+              <Package size={16} strokeWidth={1.75} className="text-[#4A6B5A]" />
+              Package 1 of 1 ({totalItemCount} item{totalItemCount !== 1 ? "s" : ""})
+            </p>
 
             <div className="flex flex-col gap-4">
               {items.map((item) => (
@@ -165,9 +223,15 @@ export default function CheckoutPage() {
           <div className="bg-white/60 rounded-xl p-6">
             <div className="flex justify-between items-start mb-4">
               <h2 className="font-display text-xl text-[#1A2E2A]">Invoice and Contact Info</h2>
-              <button className="text-sm text-[#4A6B5A]">Edit</button>
+              <button
+                onClick={() => router.push("/account")}
+                aria-label="Edit contact info"
+                className="text-sm text-[#4A6B5A]"
+              >
+                Edit
+              </button>
             </div>
-            <p className="text-sm text-[#1A2E2A]">✉️ shreesha.shrestha@example.com</p>
+            <p className="text-sm text-[#1A2E2A]">✉️ {profile?.email}</p>
           </div>
         </div>
 
@@ -187,7 +251,7 @@ export default function CheckoutPage() {
 
           <div className="h-px bg-[#D8E0D9] my-3" />
 
-          <div className="flex justify-between text-base font-medium mb-5">
+          <div className="flex justify-between text-base font-medium mb-5" aria-live="polite">
             <span className="text-[#1A2E2A]">Total</span>
             <span className="text-[#4A6B5A]">Rs {total}</span>
           </div>
@@ -197,7 +261,7 @@ export default function CheckoutPage() {
             disabled={placing}
             className="w-full bg-[#4A6B5A] hover:bg-[#3a5548] disabled:opacity-60 text-white font-medium py-3 rounded-lg transition-colors text-sm tracking-wide mb-3"
           >
-            {placing ? "Placing order..." : "Proceed to Pay"}
+            {placing ? "Placing order..." : hasAddress ? "Proceed to Pay" : "Add delivery address"}
           </button>
 
           <p className="text-center text-xs text-[#6B7B76] mb-4">
@@ -207,10 +271,12 @@ export default function CheckoutPage() {
           <div className="h-px bg-[#D8E0D9] my-3" />
 
           <p className="text-xs text-[#6B7B76] flex items-center gap-2 mb-2">
-            🛡️ Secure Payment Gateway
+            <ShieldCheck size={15} strokeWidth={1.75} className="text-[#4A6B5A]" />
+            Secure Payment Gateway
           </p>
           <p className="text-xs text-[#6B7B76] flex items-center gap-2">
-            🚚 Tracked Shipping Worldwide
+            <Truck size={15} strokeWidth={1.75} className="text-[#4A6B5A]" />
+            Tracked Shipping Worldwide
           </p>
         </div>
       </div>

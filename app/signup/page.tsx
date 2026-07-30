@@ -1,6 +1,37 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
+import ReCAPTCHA from "react-google-recaptcha";
+
+type PasswordCheck = { label: string; passed: boolean };
+
+function getPasswordChecks(password: string): PasswordCheck[] {
+  return [
+    { label: "At least 8 characters", passed: password.length >= 8 },
+    { label: "One uppercase letter", passed: /[A-Z]/.test(password) },
+    { label: "One lowercase letter", passed: /[a-z]/.test(password) },
+    { label: "One number", passed: /[0-9]/.test(password) },
+    { label: "One special character", passed: /[^A-Za-z0-9]/.test(password) },
+  ];
+}
+
+type Strength = { label: string; score: number; color: string };
+
+function getPasswordStrength(password: string): Strength {
+  if (password.length === 0) return { label: "", score: 0, color: "transparent" };
+
+  let score = 0;
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/[a-z]/.test(password)) score++;
+  if (/[0-9]/.test(password)) score++;
+  if (/[^A-Za-z0-9]/.test(password)) score++;
+
+  if (score <= 2) return { label: "Weak", score: 1, color: "#C0392B" };
+  if (score <= 4) return { label: "Medium", score: 2, color: "#D4A017" };
+  return { label: "Strong", score: 3, color: "#4A6B5A" };
+}
 
 export default function SignupPage() {
   const router = useRouter();
@@ -12,17 +43,31 @@ export default function SignupPage() {
   const [agreed, setAgreed]       = useState(false);
   const [error, setError]         = useState("");
   const [loading, setLoading]     = useState(false);
+  const [passwordFocused, setPasswordFocused] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+
+  const passwordChecks = useMemo(() => getPasswordChecks(password), [password]);
+  const passwordValid = passwordChecks.every((c) => c.passed);
+  const strength = useMemo(() => getPasswordStrength(password), [password]);
 
   async function handleSignup(e: React.FormEvent) {
     e.preventDefault();
     setError("");
 
+    if (!passwordValid) {
+      setError("Please meet all password requirements below.");
+      return;
+    }
     if (password !== confirm) {
       setError("Passwords do not match.");
       return;
     }
     if (!agreed) {
       setError("Please agree to the Terms of Service.");
+      return;
+    }
+    if (!captchaToken) {
+      setError("Please complete the CAPTCHA.");
       return;
     }
 
@@ -35,6 +80,7 @@ export default function SignupPage() {
           username: firstName + " " + lastName,
           email,
           password,
+          captchaToken,
         }),
       });
 
@@ -72,7 +118,7 @@ export default function SignupPage() {
         </h1>
 
         {error && (
-          <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
+          <div role="alert" aria-live="assertive" className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
             {error}
           </div>
         )}
@@ -82,24 +128,28 @@ export default function SignupPage() {
           {/* First + Last name */}
           <div className="flex flex-col md:flex-row gap-3">
             <div className="flex-1">
-              <label className="block text-sm text-[#1A2E2A] mb-1.5">First Name</label>
+              <label htmlFor="signup-firstname" className="block text-sm text-[#1A2E2A] mb-1.5">First Name</label>
               <input
+                id="signup-firstname"
                 type="text"
                 placeholder="Shreesha"
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
                 required
+                aria-required="true"
                 className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] placeholder:text-[#bbb] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
               />
             </div>
             <div className="flex-1">
-              <label className="block text-sm text-[#1A2E2A] mb-1.5">Last Name</label>
+              <label htmlFor="signup-lastname" className="block text-sm text-[#1A2E2A] mb-1.5">Last Name</label>
               <input
+                id="signup-lastname"
                 type="text"
                 placeholder="Shrestha"
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
                 required
+                aria-required="true"
                 className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] placeholder:text-[#bbb] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
               />
             </div>
@@ -107,39 +157,85 @@ export default function SignupPage() {
 
           {/* Email */}
           <div>
-            <label className="block text-sm text-[#1A2E2A] mb-1.5">Email</label>
+            <label htmlFor="signup-email" className="block text-sm text-[#1A2E2A] mb-1.5">Email</label>
             <input
+              id="signup-email"
               type="email"
               placeholder="shreesha@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              aria-required="true"
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] placeholder:text-[#bbb] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-sm text-[#1A2E2A] mb-1.5">Password</label>
+            <label htmlFor="signup-password" className="block text-sm text-[#1A2E2A] mb-1.5">Password</label>
             <input
+              id="signup-password"
               type="password"
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              onFocus={() => setPasswordFocused(true)}
               required
+              aria-required="true"
+              aria-describedby="password-requirements"
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
+
+            {password.length > 0 && (
+              <div className="mt-2">
+                <div className="flex gap-1.5 h-1.5">
+                  {[1, 2, 3].map((bar) => (
+                    <div
+                      key={bar}
+                      className="flex-1 rounded-full transition-colors"
+                      style={{
+                        backgroundColor: bar <= strength.score ? strength.color : "#E3E9E4",
+                      }}
+                    />
+                  ))}
+                </div>
+                <p
+                  className="text-xs mt-1 font-medium"
+                  style={{ color: strength.color }}
+                >
+                  {strength.label} password
+                </p>
+              </div>
+            )}
+
+            {(passwordFocused || password.length > 0) && (
+              <ul id="password-requirements" className="mt-2 flex flex-col gap-1">
+                {passwordChecks.map((check) => (
+                  <li
+                    key={check.label}
+                    className={`text-xs flex items-center gap-1.5 ${
+                      check.passed ? "text-[#4A6B5A]" : "text-[#9aa5a0]"
+                    }`}
+                  >
+                    <span>{check.passed ? "✓" : "○"}</span>
+                    {check.label}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-sm text-[#1A2E2A] mb-1.5">Confirm Password</label>
+            <label htmlFor="signup-confirm" className="block text-sm text-[#1A2E2A] mb-1.5">Confirm Password</label>
             <input
+              id="signup-confirm"
               type="password"
               placeholder="••••••••"
               value={confirm}
               onChange={(e) => setConfirm(e.target.value)}
               required
+              aria-required="true"
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
           </div>
@@ -154,11 +250,17 @@ export default function SignupPage() {
             />
             <span className="text-xs text-[#4a5a55] leading-relaxed">
               I agree with the{" "}
-              <button type="button" className="underline hover:text-[#4A6B5A]">Terms of Service</button>
+              <button type="button" className="underline hover:text-[#4A6B5A]">Terms ofService</button>
               {" "}and{" "}
               <button type="button" className="underline hover:text-[#4A6B5A]">Privacy Policy</button>
             </span>
           </label>
+
+          <ReCAPTCHA
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+            onChange={(token) => setCaptchaToken(token)}
+            onExpired={() => setCaptchaToken(null)}
+          />
 
           {/* Submit */}
           <button
@@ -186,7 +288,7 @@ export default function SignupPage() {
               <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
               <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/>
               <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/>
-              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+              <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.151.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
             </svg>
             Continue with Google
           </button>

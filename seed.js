@@ -14,29 +14,38 @@ mongoose.connect(process.env.MONGO_URI).then(async () => {
   console.log('Using seller:', seller.email);
 
   const products = [
-    { name: 'Beans Necklace',  price: 1000, category: 'jewelry',     subcategory: 'Necklaces', image: 'https://picsum.photos/seed/beans-necklace/400/400',  description: 'A playful handcrafted bean-shaped necklace.', stock: 10, rating: 4, reviews: 42, sellerId: seller._id },
-    { name: 'Earrings',        price: 600,  category: 'jewelry',     subcategory: 'Earrings',  image: 'https://picsum.photos/seed/earrings1/400/400',        description: 'Lightweight clay earrings.',                  stock: 15, rating: 5, reviews: 18, sellerId: seller._id },
-    { name: 'Ring',            price: 200,  category: 'jewelry',     subcategory: 'Rings',     image: 'https://picsum.photos/seed/ring1/400/400',            description: 'A minimalist handmade ring.',                 stock: 20, rating: 3, reviews: 5,  sellerId: seller._id },
-    { name: 'Bands',           price: 900,  category: 'jewelry',     subcategory: 'Rings',     image: 'https://picsum.photos/seed/bands/400/400',            description: 'Woven artisan bands.',                        stock: 8,  rating: 4, reviews: 29, sellerId: seller._id },
-    { name: 'Necklace',        price: 2000, category: 'jewelry',     subcategory: 'Necklaces', image: 'https://picsum.photos/seed/necklace2/400/400',        description: 'An elegant handmade necklace.',               stock: 5,  rating: 5, reviews: 53, sellerId: seller._id },
-    { name: 'Heart Ring',      price: 500,  category: 'jewelry',     subcategory: 'Rings',     image: 'https://picsum.photos/seed/heart-ring/400/400',       description: 'A romantic heart-shaped ring.',               stock: 12, rating: 4, reviews: 12, sellerId: seller._id },
-    { name: 'Circle Earrings', price: 800,  category: 'jewelry',     subcategory: 'Earrings',  image: 'https://picsum.photos/seed/circle-earrings/400/400',  description: 'Bold circular earrings.',                     stock: 10, rating: 5, reviews: 31, sellerId: seller._id },
-    { name: 'Hand Bands',      price: 400,  category: 'jewelry',     subcategory: 'Rings',     image: 'https://picsum.photos/seed/hand-bands/400/400',       description: 'Colorful woven hand bands.',                  stock: 18, rating: 3, reviews: 24, sellerId: seller._id },
-    { name: 'Ceramic Vase',    price: 1200, category: 'home-decor',  subcategory: 'Vases',     image: 'https://picsum.photos/seed/vase1/400/400',            description: 'Handcrafted ceramic vase.',                   stock: 7,  rating: 4, reviews: 20, sellerId: seller._id },
-    { name: 'Terra Pot',       price: 700,  category: 'home-decor',  subcategory: 'Pots',      image: 'https://picsum.photos/seed/pot1/400/400',             description: 'Beautiful terra cotta pot.',                  stock: 9,  rating: 5, reviews: 15, sellerId: seller._id },
-    { name: 'Table Lamp',      price: 1800, category: 'home-decor',  subcategory: 'Lighting',  image: 'https://picsum.photos/seed/lamp1/400/400',            description: 'Handmade table lamp.',                        stock: 4,  rating: 4, reviews: 9,  sellerId: seller._id },
-    { name: 'Decorative Bowl', price: 600,  category: 'home-decor',  subcategory: 'Vases',     image: 'https://picsum.photos/seed/bowl1/400/400',            description: 'Decorative handmade bowl.',                   stock: 11, rating: 5, reviews: 33, sellerId: seller._id },
-    { name: 'Woven Tote',      price: 1500, category: 'accessories', subcategory: 'Bags',      image: 'https://picsum.photos/seed/tote1/400/400',            description: 'Handwoven tote bag.',                         stock: 6,  rating: 5, reviews: 27, sellerId: seller._id },
-    { name: 'Leather Bag',     price: 2200, category: 'accessories', subcategory: 'Bags',      image: 'https://picsum.photos/seed/bag1/400/400',             description: 'Handcrafted leather bag.',                    stock: 5,  rating: 4, reviews: 14, sellerId: seller._id },
-    { name: 'Linen Scarf',     price: 450,  category: 'accessories', subcategory: 'Scarves',   image: 'https://picsum.photos/seed/scarf1/400/400',           description: 'Soft linen scarf.',                           stock: 20, rating: 5, reviews: 19, sellerId: seller._id },
-    { name: 'Lavender Candle', price: 350,  category: 'candles',     subcategory: 'Scented',   image: 'https://picsum.photos/seed/candle1/400/400',          description: 'Hand-poured lavender candle.',                stock: 25, rating: 5, reviews: 41, sellerId: seller._id },
-    { name: 'Vanilla Candle',  price: 380,  category: 'candles',     subcategory: 'Scented',   image: 'https://picsum.photos/seed/candle2/400/400',          description: 'Warm vanilla scented candle.',                stock: 20, rating: 4, reviews: 22, sellerId: seller._id },
-    { name: 'Plain Pillar',    price: 250,  category: 'candles',     subcategory: 'Unscented', image: 'https://picsum.photos/seed/candle3/400/400',          description: 'Simple unscented pillar candle.',             stock: 30, rating: 4, reviews: 8,  sellerId: seller._id },
+    // Clothing
+    { name: 'Vintage Denim Jacket', price: 1800, category: 'clothing', subcategory: 'Tops',    image: 'https://picsum.photos/seed/denim-jacket/400/400', description: 'Classic pre-loved denim jacket, gently worn.', stock: 3,  condition: 'Good',     rating: 4, reviews: 12, sellerId: seller._id, status: 'approved' },
+    { name: 'Cotton Blouse',        price: 900,  category: 'clothing', subcategory: 'Tops',    image: 'https://picsum.photos/seed/cotton-blouse/400/400', description: 'Soft cotton blouse, like new.',                stock: 5,  condition: 'Like New', rating: 5, reviews: 8,  sellerId: seller._id, status: 'approved' },
+    { name: 'High-Waist Jeans',     price: 1200, category: 'clothing', subcategory: 'Bottoms', image: 'https://picsum.photos/seed/hw-jeans/400/400',      description: 'High-waist jeans, barely worn.',               stock: 4,  condition: 'Like New', rating: 4, reviews: 15, sellerId: seller._id, status: 'approved' },
+    { name: 'Linen Trousers',       price: 1100, category: 'clothing', subcategory: 'Bottoms', image: 'https://picsum.photos/seed/linen-trousers/400/400',description: 'Breathable linen trousers.',                   stock: 6,  condition: 'Good',     rating: 4, reviews: 9,  sellerId: seller._id, status: 'approved' },
+    { name: 'Floral Summer Dress',  price: 1500, category: 'clothing', subcategory: 'Dresses', image: 'https://picsum.photos/seed/floral-dress/400/400',  description: 'Light floral dress, perfect for summer.',      stock: 2,  condition: 'Good',     rating: 5, reviews: 21, sellerId: seller._id, status: 'approved' },
+
+    // Furniture
+    { name: 'Rattan Accent Chair',  price: 4500, category: 'furniture', subcategory: 'Chairs',  image: 'https://picsum.photos/seed/rattan-chair/400/400',  description: 'Handwoven rattan accent chair.',              stock: 1, condition: 'Good',     rating: 5, reviews: 6,  sellerId: seller._id, status: 'approved' },
+    { name: 'Wooden Dining Table',  price: 8500, category: 'furniture', subcategory: 'Tables',  image: 'https://picsum.photos/seed/dining-table/400/400',  description: 'Solid wood dining table, seats four.',        stock: 1, condition: 'Fair',     rating: 4, reviews: 3,  sellerId: seller._id, status: 'approved' },
+    { name: 'Storage Ottoman',      price: 2200, category: 'furniture', subcategory: 'Storage', image: 'https://picsum.photos/seed/storage-ottoman/400/400', description: 'Upholstered ottoman with hidden storage.', stock: 3, condition: 'Good',     rating: 4, reviews: 11, sellerId: seller._id, status: 'approved' },
+    { name: 'Wooden Storage Chest', price: 3200, category: 'furniture', subcategory: 'Storage', image: 'https://picsum.photos/seed/storage-chest/400/400', description: 'Rustic wooden storage chest.',                stock: 2, condition: 'Good',     rating: 5, reviews: 7,  sellerId: seller._id, status: 'approved' },
+
+    // Books
+    { name: 'The Great Gatsby (Used)', price: 350, category: 'books', subcategory: 'Fiction',      image: 'https://picsum.photos/seed/gatsby/400/400',       description: 'Well-loved paperback copy.',           stock: 4,  condition: 'Fair',     rating: 4, reviews: 10, sellerId: seller._id, status: 'approved' },
+    { name: 'Atomic Habits',           price: 600, category: 'books', subcategory: 'Non-Fiction',  image: 'https://picsum.photos/seed/atomic-habits/400/400',description: 'Popular self-help book, great condition.', stock: 3,  condition: 'Like New', rating: 5, reviews: 18, sellerId: seller._id, status: 'approved' },
+    { name: 'Kids Storybook Set',      price: 800, category: 'books', subcategory: "Children's",   image: 'https://picsum.photos/seed/storybook-set/400/400',description: 'Set of 3 illustrated storybooks.',      stock: 5,  condition: 'Good',     rating: 5, reviews: 14, sellerId: seller._id, status: 'approved' },
+
+    // Accessories
+    { name: 'Woven Tote Bag',   price: 1500, category: 'accessories', subcategory: 'Bags',    image: 'https://picsum.photos/seed/tote-bag/400/400',   description: 'Handwoven tote, gently used.',   stock: 6,  condition: 'Good',     rating: 5, reviews: 27, sellerId: seller._id, status: 'approved' },
+    { name: 'Leather Crossbody', price: 2200, category: 'accessories', subcategory: 'Bags',    image: 'https://picsum.photos/seed/leather-bag/400/400', description: 'Compact leather crossbody bag.', stock: 3,  condition: 'Like New', rating: 4, reviews: 14, sellerId: seller._id, status: 'approved' },
+    { name: 'Linen Scarf',       price: 450,  category: 'accessories', subcategory: 'Scarves', image: 'https://picsum.photos/seed/linen-scarf/400/400', description: 'Soft, breathable linen scarf.', stock: 8,  condition: 'Good',     rating: 5, reviews: 19, sellerId: seller._id, status: 'approved' },
+
+    // Home Goods
+    { name: 'Ceramic Vase',      price: 1200, category: 'home-goods', subcategory: 'Decor',       image: 'https://picsum.photos/seed/ceramic-vase/400/400', description: 'Handcrafted ceramic vase.',         stock: 4,  condition: 'Good',     rating: 4, reviews: 20, sellerId: seller._id, status: 'approved' },
+    { name: 'Cast Iron Skillet', price: 900,  category: 'home-goods', subcategory: 'Kitchenware', image: 'https://picsum.photos/seed/skillet/400/400',      description: 'Well-seasoned cast iron skillet.', stock: 5,  condition: 'Good',     rating: 5, reviews: 24, sellerId: seller._id, status: 'approved' },
+    { name: 'Cotton Throw Blanket', price: 700, category: 'home-goods', subcategory: 'Textiles', image: 'https://picsum.photos/seed/throw-blanket/400/400', description: 'Cozy cotton throw blanket.',      stock: 7,  condition: 'Good',     rating: 4, reviews: 16, sellerId: seller._id, status: 'approved' },
   ];
 
   await Product.deleteMany({});
   console.log('Cleared old products');
-  
+
   await Product.insertMany(products);
   console.log('All products seeded successfully');
   process.exit(0);

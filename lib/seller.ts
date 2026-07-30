@@ -31,18 +31,10 @@ export interface SellerOrder {
   items: SellerOrderItem[];
 }
 
-function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("token");
-}
-
 export async function getMyProducts(): Promise<SellerProduct[]> {
-  const token = getToken();
-  if (!token) return [];
-
   try {
     const res = await fetch(`${API_URL}/products/seller/mine`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     const data = await res.json();
     return data.success ? data.products : [];
@@ -60,16 +52,11 @@ export async function createProduct(payload: {
   description: string;
   stock?: number;
 }): Promise<{ success: boolean; product?: SellerProduct; message?: string }> {
-  const token = getToken();
-  if (!token) return { success: false, message: "Not logged in" };
-
   try {
     const res = await fetch(`${API_URL}/products`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
     return await res.json();
@@ -79,13 +66,10 @@ export async function createProduct(payload: {
 }
 
 export async function deleteProduct(id: string): Promise<{ success: boolean; message?: string }> {
-  const token = getToken();
-  if (!token) return { success: false, message: "Not logged in" };
-
   try {
     const res = await fetch(`${API_URL}/products/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     return await res.json();
   } catch {
@@ -94,12 +78,9 @@ export async function deleteProduct(id: string): Promise<{ success: boolean; mes
 }
 
 export async function getSellerOrders(): Promise<SellerOrder[]> {
-  const token = getToken();
-  if (!token) return [];
-
   try {
     const res = await fetch(`${API_URL}/seller/orders`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     const data = await res.json();
     return data.success ? data.orders : [];
