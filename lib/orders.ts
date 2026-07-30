@@ -1,5 +1,6 @@
 // lib/orders.ts
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export interface OrderItem {
   id: string;
   name: string;
@@ -7,6 +8,7 @@ export interface OrderItem {
   image: string;
   qty: number;
 }
+
 export interface Order {
   _id: string;
   userId: string;
@@ -22,24 +24,17 @@ export interface Order {
   orderNumber: string;
   createdAt: string;
 }
-function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("token");
-}
+
 export async function createOrder(payload: {
   deliveryOption: "standard" | "pickup";
   shippingAddress: { name: string; phone: string; address: string };
   paymentMethod: "esewa" | "khalti" | "bank";
 }): Promise<{ success: boolean; order?: Order; message?: string }> {
-  const token = getToken();
-  if (!token) return { success: false, message: "Not logged in" };
   try {
     const res = await fetch(`${API_URL}/orders`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(payload),
     });
     return await res.json();
@@ -47,25 +42,23 @@ export async function createOrder(payload: {
     return { success: false, message: "Something went wrong" };
   }
 }
+
 export async function markOrderPaid(orderId: string): Promise<{ success: boolean; order?: Order }> {
-  const token = getToken();
-  if (!token) return { success: false };
   try {
     const res = await fetch(`${API_URL}/orders/${orderId}/pay`, {
       method: "PUT",
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     return await res.json();
   } catch {
     return { success: false };
   }
 }
+
 export async function getOrderById(orderId: string): Promise<Order | null> {
-  const token = getToken();
-  if (!token) return null;
   try {
     const res = await fetch(`${API_URL}/orders/${orderId}`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     const data = await res.json();
     return data.success ? data.order : null;
@@ -73,12 +66,11 @@ export async function getOrderById(orderId: string): Promise<Order | null> {
     return null;
   }
 }
+
 export async function getMyOrders(): Promise<Order[]> {
-  const token = getToken();
-  if (!token) return [];
   try {
     const res = await fetch(`${API_URL}/orders`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     const data = await res.json();
     return data.success ? data.orders : [];
@@ -86,19 +78,16 @@ export async function getMyOrders(): Promise<Order[]> {
     return [];
   }
 }
+
 export async function updateOrderStatus(
   orderId: string,
   orderStatus: string
 ): Promise<{ success: boolean; order?: Order; message?: string }> {
-  const token = getToken();
-  if (!token) return { success: false, message: "Not logged in" };
   try {
     const res = await fetch(`${API_URL}/orders/${orderId}/status`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ status: orderStatus }),
     });
     return await res.json();

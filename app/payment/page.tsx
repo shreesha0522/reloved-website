@@ -1,26 +1,28 @@
 // app/payment/page.tsx
 "use client";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { isLoggedIn } from "@/lib/auth";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { getOrderById, markOrderPaid, Order } from "@/lib/orders";
 import { initiateEsewaPayment } from "@/lib/esewa";
 
 
 type PaymentMethod = "esewa" | "khalti" | "bank";
 
-function PaymentPageContent() {
+function PaymentContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const orderId = searchParams.get("orderId");
 
+  const { loading: checkingSession, isLoggedIn } = useCurrentUser();
   const [checking, setChecking] = useState(true);
   const [order, setOrder] = useState<Order | null>(null);
   const [method, setMethod] = useState<PaymentMethod>("esewa");
   const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
-    if (!isLoggedIn()) {
+    if (checkingSession) return;
+    if (!isLoggedIn) {
       router.push("/login");
       return;
     }
@@ -39,7 +41,7 @@ function PaymentPageContent() {
       setChecking(false);
     }
     load();
-  }, [orderId, router]);
+  }, [checkingSession, isLoggedIn, orderId, router]);
 
   if (checking || !order) return null;
 
@@ -231,8 +233,8 @@ async function handlePayment() {
 
 export default function PaymentPage() {
   return (
-    <Suspense fallback={null}>
-      <PaymentPageContent />
+    <Suspense fallback={<div className="min-h-screen bg-[#F4F6F2]" />}>
+      <PaymentContent />
     </Suspense>
   );
 }

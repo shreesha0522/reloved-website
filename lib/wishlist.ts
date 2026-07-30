@@ -9,18 +9,10 @@ export interface WishlistItem {
   category: string;
 }
 
-function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("token");
-}
-
 export async function getWishlist(): Promise<WishlistItem[]> {
-  const token = getToken();
-  if (!token) return [];
-
   try {
     const res = await fetch(`${API_URL}/wishlist`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     const data = await res.json();
     return data.success ? data.wishlist : [];
@@ -30,21 +22,17 @@ export async function getWishlist(): Promise<WishlistItem[]> {
 }
 
 export async function toggleWishlist(item: WishlistItem): Promise<boolean> {
-  const token = getToken();
-  if (!token) {
-    alert("Please log in to use the wishlist.");
-    return false;
-  }
-
   try {
     const res = await fetch(`${API_URL}/wishlist/toggle`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify(item),
     });
+    if (res.status === 401) {
+      alert("Please log in to use the wishlist.");
+      return false;
+    }
     const data = await res.json();
     window.dispatchEvent(new Event("wishlist-updated"));
     return data.added;

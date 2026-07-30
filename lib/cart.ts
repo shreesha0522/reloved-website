@@ -11,17 +11,10 @@ export interface CartItem {
   sellerId?: string;
 }
 
-function getToken(): string | null {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("token");
-}
-
 export async function getCart(): Promise<CartItem[]> {
-  const token = getToken();
-  if (!token) return [];
   try {
     const res = await fetch(`${API_URL}/cart`, {
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     const data = await res.json();
     return data.success ? data.cart : [];
@@ -35,20 +28,17 @@ export async function addToCart(
   productId: string,
   qty: number = 1
 ): Promise<{ success: boolean; message?: string }> {
-  const token = getToken();
-  if (!token) {
-    return { success: false, message: "Please log in to add items to your cart." };
-  }
   try {
     const res = await fetch(`${API_URL}/cart/add`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ id: productId, qty }),
     });
     const data = await res.json();
+    if (res.status === 401) {
+      return { success: false, message: "Please log in to add items to your cart." };
+    }
     if (data.success) {
       window.dispatchEvent(new Event("cart-updated"));
       return { success: true };
@@ -62,12 +52,10 @@ export async function addToCart(
 }
 
 export async function removeFromCart(id: string) {
-  const token = getToken();
-  if (!token) return;
   try {
     await fetch(`${API_URL}/cart/remove/${id}`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     window.dispatchEvent(new Event("cart-updated"));
   } catch (error) {
@@ -79,15 +67,11 @@ export async function updateQty(
   id: string,
   qty: number
 ): Promise<{ success: boolean; message?: string }> {
-  const token = getToken();
-  if (!token) return { success: false, message: "Not logged in" };
   try {
     const res = await fetch(`${API_URL}/cart/update`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers: { "Content-Type": "application/json" },
+      credentials: "include",
       body: JSON.stringify({ id, qty }),
     });
     const data = await res.json();
@@ -104,12 +88,10 @@ export async function updateQty(
 }
 
 export async function clearCart() {
-  const token = getToken();
-  if (!token) return;
   try {
     await fetch(`${API_URL}/cart/clear`, {
       method: "DELETE",
-      headers: { Authorization: `Bearer ${token}` },
+      credentials: "include",
     });
     window.dispatchEvent(new Event("cart-updated"));
   } catch (error) {
