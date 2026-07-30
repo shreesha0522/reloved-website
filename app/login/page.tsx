@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { verifyLoginMFA } from "@/lib/mfa";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -10,6 +11,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError]               = useState("");
   const [loading, setLoading]           = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   // --- MFA step state ---
   const [mfaStep, setMfaStep] = useState(false);
@@ -28,6 +30,12 @@ export default function LoginPage() {
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
     setError("");
+
+    if (!captchaToken) {
+      setError("Please complete the CAPTCHA.");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -35,7 +43,7 @@ export default function LoginPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include", // required so the browser stores/sends the httpOnly cookie
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password, captchaToken }),
       });
 
       const data = await res.json();
@@ -49,6 +57,12 @@ export default function LoginPage() {
       // switch to the code-entry screen instead of logging in yet.
       if (data.mfaRequired) {
         setMfaStep(true);
+        return;
+      }
+
+      if (data.data.passwordExpired) {
+        router.push("/account?passwordExpired=true");
+        router.refresh();
         return;
       }
 
@@ -75,6 +89,12 @@ export default function LoginPage() {
 
     if (!result.success) {
       setError(result.message || "Invalid code. Please try again.");
+      return;
+    }
+
+    if (result.data.passwordExpired) {
+      router.push("/account?passwordExpired=true");
+      router.refresh();
       return;
     }
 
@@ -146,43 +166,48 @@ export default function LoginPage() {
         <h1 className="font-display text-3xl md:text-4xl text-[#1A2E2A] mb-6">Login</h1>
 
         {error && (
-          <div className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
+          <div role="alert" aria-live="assertive" className="mb-4 px-4 py-3 bg-red-50 border border-red-200 text-red-600 text-sm rounded-lg">
             {error}
           </div>
         )}
 
         <form onSubmit={handleLogin} className="flex flex-col gap-5">
           <div>
-            <label className="block text-sm text-[#1A2E2A] mb-1.5">Email</label>
+            <label htmlFor="login-email" className="block text-sm text-[#1A2E2A] mb-1.5">Email</label>
             <input
+              id="login-email"
               type="email"
               placeholder="shreesha@example.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              aria-required="true"
               className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] placeholder:text-[#bbb] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30"
             />
           </div>
 
           <div>
             <div className="flex justify-between mb-1.5">
-              <label className="text-sm text-[#1A2E2A]">Password</label>
+              <label htmlFor="login-password" className="text-sm text-[#1A2E2A]">Password</label>
               <button type="button" className="text-xs text-[#6B7B76] hover:text-[#4A6B5A]">
                 Forgot Password?
               </button>
             </div>
             <div className="relative">
               <input
+                id="login-password"
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                aria-required="true"
                 className="w-full border border-[#D8E0D9] rounded-lg px-4 py-2.5 text-sm bg-white text-[#1A2E2A] focus:outline-none focus:ring-2 focus:ring-[#4A6B5A]/30 pr-10"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
                 className="absolute right-3 top-1/2 -translate-y-1/2 text-[#6B7B76] hover:text-[#1A2E2A] transition-colors"
               >
                 {showPassword ? (
@@ -199,6 +224,12 @@ export default function LoginPage() {
               </button>
             </div>
           </div>
+
+          <ReCAPTCHA
+            sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
+            onChange={(token) => setCaptchaToken(token)}
+            onExpired={() => setCaptchaToken(null)}
+          />
 
           <button
             type="submit"

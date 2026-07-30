@@ -1,13 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { getProfile, updateProfile, requestSeller, UserProfile } from "@/lib/user";
 import { setupMFA, verifySetupMFA, disableMFA } from "@/lib/mfa";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
-export default function AccountPage() {
+function AccountPageInner() {
   const router = useRouter();
   const { loading: checkingSession, isLoggedIn, user, refetch } = useCurrentUser();
+  const searchParams = useSearchParams();
+  const passwordExpired = searchParams.get("passwordExpired") === "true";
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState<UserProfile | null>(null);
 
@@ -187,6 +189,15 @@ export default function AccountPage() {
     <div className="min-h-screen bg-[#F4F6F2] px-6 md:px-10 py-12">
       <div className="max-w-xl mx-auto">
         <h1 className="font-display text-4xl text-[#1A2E2A] mb-8">My Account</h1>
+
+        {passwordExpired && (
+          <div
+            role="alert"
+            className="mb-5 px-4 py-3 rounded-lg text-sm border bg-amber-50 border-amber-200 text-amber-800"
+          >
+            Your password has expired. Please set a new one below to continue using your account securely.
+          </div>
+        )}
 
         {message && (
           <div
@@ -490,5 +501,16 @@ export default function AccountPage() {
         )}
       </div>
     </div>
+  );
+}
+export default function AccountPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#F4F6F2] px-10 py-12">
+        <p className="text-[#6B7B76] text-sm">Loading your account...</p>
+      </div>
+    }>
+      <AccountPageInner />
+    </Suspense>
   );
 }

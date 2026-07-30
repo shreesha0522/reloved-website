@@ -1,8 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import { getCurrentUser } from "@/lib/auth";
-
-type CurrentUser = Awaited<ReturnType<typeof getCurrentUser>>;
+import { getCurrentUser, CurrentUser } from "@/lib/auth";
 
 // Replaces the old pattern of reading localStorage.getItem("userRole") /
 // "isLoggedIn" directly in every page. Since the token is now an httpOnly

@@ -110,15 +110,18 @@ export default function CartPage() {
               <div className="flex items-center gap-2 mt-2">
                 <button
                   onClick={() => handleUpdateQty(item.id, item.qty - 1)}
+                  aria-label={`Decrease quantity of ${item.name}`}
                   className="w-7 h-7 border border-[#D8E0D9] rounded text-sm flex-shrink-0"
                 >
                   -
                 </button>
-                <span className="text-sm w-6 text-center">{item.qty}</span>
+                <span className="text-sm w-6 text-center" aria-label={`Quantity: ${item.qty}`}>{item.qty}</span>
                 <button
                   onClick={() => handleUpdateQty(item.id, item.qty + 1)}
                   disabled={item.qty >= 1}
                   title="Only 1 available — this is a one-of-a-kind thrift item"
+                  aria-label={`Increase quantity of ${item.name}`}
+                  aria-disabled={item.qty >= 1}
                   className="w-7 h-7 border border-[#D8E0D9] rounded text-sm flex-shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   +
@@ -131,15 +134,18 @@ export default function CartPage() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => handleUpdateQty(item.id, item.qty - 1)}
+                  aria-label={`Decrease quantity of ${item.name}`}
                   className="w-7 h-7 border border-[#D8E0D9] rounded text-sm"
                 >
                   -
                 </button>
-                <span className="text-sm w-6 text-center">{item.qty}</span>
+                <span className="text-sm w-6 text-center" aria-label={`Quantity: ${item.qty}`}>{item.qty}</span>
                 <button
                   onClick={() => handleUpdateQty(item.id, item.qty + 1)}
                   disabled={item.qty >= 1}
                   title="Only 1 available — this is a one-of-a-kind thrift item"
+                  aria-label={`Increase quantity of ${item.name}`}
+                  aria-disabled={item.qty >= 1}
                   className="w-7 h-7 border border-[#D8E0D9] rounded text-sm disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   +
@@ -147,6 +153,7 @@ export default function CartPage() {
               </div>
               <button
                 onClick={() => handleRemove(item.id)}
+                aria-label={`Remove ${item.name} from cart`}
                 className="text-xs text-[#6B7B76] hover:text-[#4A6B5A]"
               >
                 Remove
@@ -155,6 +162,7 @@ export default function CartPage() {
 
             <button
               onClick={() => handleRemove(item.id)}
+              aria-label={`Remove ${item.name} from cart`}
               className="hidden sm:block text-xs text-[#6B7B76] hover:text-[#4A6B5A]"
             >
               Remove
@@ -164,7 +172,7 @@ export default function CartPage() {
       </div>
 
       <div className="max-w-2xl mt-6 bg-white/60 rounded-xl p-6 flex flex-col sm:flex-row gap-4 sm:justify-between sm:items-center">
-        <span className="font-display text-lg text-[#1A2E2A]">
+        <span className="font-display text-lg text-[#1A2E2A]" aria-live="polite">
           Total: <span className="text-[#4A6B5A]">Rs {total}</span>
         </span>
         <button

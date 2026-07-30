@@ -33,6 +33,7 @@ export default function CategoryPage() {
   const [products, setProducts]       = useState<Product[]>([]);
   const [loading, setLoading]         = useState(true);
   const [activeFilter, setActiveFilter] = useState("All Items");
+  const [conditionFilter, setConditionFilter] = useState("All Conditions");
   const [justAdded, setJustAdded]     = useState<string | null>(null);
   const title   = categoryTitles[slug]  || slug;
   const filters = categoryFilters[slug] || ["All Items"];
@@ -45,9 +46,11 @@ export default function CategoryPage() {
     }
     fetchProducts();
   }, [slug]);
-  const filtered = activeFilter === "All Items"
-    ? products
-    : products.filter((p) => p.subcategory === activeFilter);
+  const filtered = products.filter((p) => {
+  const matchesSubcategory = activeFilter === "All Items" || p.subcategory === activeFilter;
+  const matchesCondition = conditionFilter === "All Conditions" || p.condition === conditionFilter;
+  return matchesSubcategory && matchesCondition;
+});
 
 async function handleAddToCart(e: React.MouseEvent, product: Product) {
   e.preventDefault();
@@ -86,9 +89,21 @@ async function handleAddToCart(e: React.MouseEvent, product: Product) {
               </button>
             ))}
           </div>
-          <div className="text-xs md:text-sm text-[#6B7B76]">
-            Sort by: <span className="text-[#1A2E2A] font-medium">Newest First</span>
-          </div>
+          <div className="flex items-center gap-3">
+  <select
+    value={conditionFilter}
+    onChange={(e) => setConditionFilter(e.target.value)}
+    className="text-xs md:text-sm rounded-full px-4 py-1.5 border border-[#D8E0D9] bg-white text-[#1A2E2A]"
+  >
+    <option value="All Conditions">All Conditions</option>
+    <option value="Like New">Like New</option>
+    <option value="Good">Good</option>
+    <option value="Fair">Fair</option>
+  </select>
+  <div className="text-xs md:text-sm text-[#6B7B76]">
+    Sort by: <span className="text-[#1A2E2A] font-medium">Newest First</span>
+  </div>
+</div>
         </div>
         {/* Loading skeletons */}
         {loading && (
